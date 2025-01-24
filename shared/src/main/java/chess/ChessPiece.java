@@ -130,7 +130,7 @@ public class ChessPiece {
         int x = myPosition.getColumn();
 
         switch(type) {
-            //I'll need to add
+            //I'll need to add this to a subclass?
             case KING:
 
                 //up-right
