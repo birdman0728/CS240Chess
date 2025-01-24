@@ -130,6 +130,7 @@ public class ChessPiece {
         int x = myPosition.getColumn();
 
         switch(type) {
+            //I'll need
             case KING:
 
                 //up-right
