@@ -57,7 +57,16 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> validMoves = new HashSet<>();
+        //TODO implement make move first or test function
+        //find possible moves
+        //copy board
+            //repeat next three until done
+        //move piece
+        //test check
+        //restore board
+        //return new collection
+        return validMoves;
     }
 
     /**
