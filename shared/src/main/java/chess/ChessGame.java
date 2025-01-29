@@ -79,7 +79,7 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingsSpot = findKing(teamColor);
         for(ChessMove move : findAllPossibleTeamMoves(oppColor(teamColor))){
-            if(move.getEndPosition() == kingsSpot){
+            if(move.getEndPosition().equals(kingsSpot)){
                 return true;
             }
         }
@@ -105,7 +105,7 @@ public class ChessGame {
         for(int i = 1; i < 9; i++){
             for(int j = 1; j < 9; j++){
                 ChessPosition newPos = new ChessPosition(i,j);
-                if(curBoard.getPiece(newPos).pieceColor == teamColor) {
+                if(curBoard.getPiece(newPos) != null && curBoard.getPiece(newPos).pieceColor == teamColor) {
                     possibleMoves.addAll(curBoard.getPiece(newPos).pieceMoves(curBoard, newPos));
                 }
             }
