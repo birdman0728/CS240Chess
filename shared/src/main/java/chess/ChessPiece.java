@@ -45,7 +45,7 @@ public class ChessPiece {
         return type;
     }
 
-    public ChessPosition moveUp(ChessPosition ogMove, ChessBoard board){
+    private ChessPosition moveUp(ChessPosition ogMove, ChessBoard board){
         if(ogMove.getRow() < 8 &&
                 (board.getPiece(new ChessPosition(ogMove.getRow() + 1, ogMove.getColumn())) == null ||
                 board.getPiece(new ChessPosition(ogMove.getRow() + 1, ogMove.getColumn())).getTeamColor() != pieceColor)) {
@@ -53,7 +53,7 @@ public class ChessPiece {
         }
         return null;
     }
-    public ChessPosition moveDown(ChessPosition ogMove, ChessBoard board){
+    private ChessPosition moveDown(ChessPosition ogMove, ChessBoard board){
         if(ogMove.getRow() > 1 &&
                 (board.getPiece(new ChessPosition(ogMove.getRow() - 1, ogMove.getColumn())) == null ||
                 board.getPiece(new ChessPosition(ogMove.getRow() - 1, ogMove.getColumn())).getTeamColor() != pieceColor)) {
@@ -62,7 +62,7 @@ public class ChessPiece {
         return null;
     }
 
-    public ChessPosition moveRight(ChessPosition ogMove, ChessBoard board){
+    private ChessPosition moveRight(ChessPosition ogMove, ChessBoard board){
         if(ogMove.getColumn() < 8 &&
                 (board.getPiece(new ChessPosition(ogMove.getRow(), ogMove.getColumn() + 1)) == null ||
                 board.getPiece(new ChessPosition(ogMove.getRow(), ogMove.getColumn() + 1)).getTeamColor() != pieceColor)){
@@ -71,7 +71,7 @@ public class ChessPiece {
         return null;
     }
 
-    public ChessPosition moveLeft(ChessPosition ogMove, ChessBoard board){
+    private ChessPosition moveLeft(ChessPosition ogMove, ChessBoard board){
         if(ogMove.getColumn() > 1 &&
                 (board.getPiece(new ChessPosition(ogMove.getRow(), ogMove.getColumn() - 1)) == null ||
                 board.getPiece(new ChessPosition(ogMove.getRow(), ogMove.getColumn() - 1)).getTeamColor() != pieceColor)){
@@ -80,7 +80,7 @@ public class ChessPiece {
         return null;
     }
 
-    public ChessPosition moveUpRight(ChessPosition ogMove, ChessBoard board){
+    private ChessPosition moveUpRight(ChessPosition ogMove, ChessBoard board){
         if(ogMove.getColumn() < 8 && ogMove.getRow() < 8 &&
                 (board.getPiece(new ChessPosition(ogMove.getRow() + 1, ogMove.getColumn() + 1)) == null ||
                 board.getPiece(new ChessPosition(ogMove.getRow() + 1, ogMove.getColumn() + 1)).getTeamColor() != pieceColor)){
@@ -89,7 +89,7 @@ public class ChessPiece {
         return null;
     }
 
-    public ChessPosition moveUpLeft(ChessPosition ogMove, ChessBoard board){
+    private ChessPosition moveUpLeft(ChessPosition ogMove, ChessBoard board){
         if(ogMove.getColumn() < 8 && ogMove.getRow() > 1 &&
                 (board.getPiece(new ChessPosition(ogMove.getRow() + 1, ogMove.getColumn() - 1)) == null ||
                 board.getPiece(new ChessPosition(ogMove.getRow() + 1, ogMove.getColumn() - 1)).getTeamColor() != pieceColor)){
@@ -98,7 +98,7 @@ public class ChessPiece {
         return null;
     }
 
-    public ChessPosition moveDownRight(ChessPosition ogMove, ChessBoard board){
+    private ChessPosition moveDownRight(ChessPosition ogMove, ChessBoard board){
         if(ogMove.getColumn() > 1 && ogMove.getRow() < 8 &&
                 (board.getPiece(new ChessPosition(ogMove.getRow() - 1, ogMove.getColumn() + 1)) == null ||
                 board.getPiece(new ChessPosition(ogMove.getRow() - 1, ogMove.getColumn() + 1)).getTeamColor() != pieceColor)){
@@ -107,7 +107,7 @@ public class ChessPiece {
         return null;
     }
 
-    public ChessPosition moveDownLeft(ChessPosition ogMove, ChessBoard board){
+    private ChessPosition moveDownLeft(ChessPosition ogMove, ChessBoard board){
         if(ogMove.getColumn() > 1 && ogMove.getRow() > 1 &&
                 (board.getPiece(new ChessPosition(ogMove.getRow() - 1, ogMove.getColumn() - 1)) == null ||
                 board.getPiece(new ChessPosition(ogMove.getRow() - 1, ogMove.getColumn() - 1)).getTeamColor() != pieceColor)){
