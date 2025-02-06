@@ -58,18 +58,39 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> validMoves = new HashSet<>();
-        ChessBoard originalBoard = curBoard;
+        ChessPiece originalPiece = curBoard.getPiece(startPosition);
+        ChessPiece endPiece;
         TeamColor checkColor = curBoard.getPiece(startPosition).getTeamColor();
-        for(ChessMove move : originalBoard.getPiece(startPosition).pieceMoves(originalBoard,startPosition)){
-            setBoard(originalBoard);
+        for(ChessMove move : curBoard.getPiece(startPosition).pieceMoves(curBoard,startPosition)){
+            if(curBoard.getPiece(move.getEndPosition()) != null){
+                endPiece = curBoard.getPiece(move.getEndPosition());
+            }else{
+                endPiece = null;
+            }
+
             movePiece(move);
             if(!isInCheck(checkColor)){
                 validMoves.add(move);
             }
+            unmovePiece(move,endPiece);
+        }
+        return validMoves;
+    }
+
+    private void unmovePiece(ChessMove move, ChessPiece replacementPiece){
+        ChessPiece oldPiece;
+        if(move.getPromotionPiece() == null){
+            oldPiece = new ChessPiece(curBoard.getPiece(move.getEndPosition()).getTeamColor(), curBoard.getPiece(move.getEndPosition()).getPieceType());
+        }else{
+            oldPiece = new ChessPiece(curBoard.getPiece(move.getEndPosition()).getTeamColor(), ChessPiece.PieceType.PAWN);
         }
 
-        setBoard(originalBoard);
-        return validMoves;
+        curBoard.addPiece(move.getStartPosition(), oldPiece);
+        if(replacementPiece != null){
+            curBoard.addPiece(move.getEndPosition(), replacementPiece);
+        }else{
+            curBoard.addPiece(move.getEndPosition(), null);
+        }
     }
 
     /**
@@ -85,15 +106,11 @@ public class ChessGame {
             throw new InvalidMoveException("No starting piece");
         }else if(!validMoves(move.startPosition).contains(move)){
             throw new InvalidMoveException("Illegal move");
+        }else if(startPiece.getTeamColor() != getTeamTurn()){
+            throw new InvalidMoveException("Not your turn");
         }
-//        else if(isInCheck(startPiece.getTeamColor())){
-//            throw new InvalidMoveException("Is in Check");
-//        }else if(curBoard.getPiece(move.getEndPosition()) != null && curBoard.getPiece(move.getEndPosition()).getTeamColor() == startPiece.getTeamColor()){
-//            throw new InvalidMoveException("Can't take own piece");
-//        }
 
         movePiece(move);
-        //TODO add invalid move exceptions
         setTeamTurn(oppColor(getTeamTurn()));
     }
 
