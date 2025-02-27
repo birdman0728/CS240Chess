@@ -1,6 +1,6 @@
 package requestsAndResults;
 
-public record RegesterRequest(
+public record RegisterRequest(
         String username,
         String password,
         String email){}
