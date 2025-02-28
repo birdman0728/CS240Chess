@@ -1,12 +1,16 @@
 package dataaccess;
 
 import model.AuthData;
+import model.UserData;
+
+import java.util.HashSet;
 
 public class userDAO {
     //TODO: create a "database" to add to or edit from etc.
     //create
-    public void createData(AuthData data){
-
+    HashSet<UserData> DB = new HashSet<UserData>();
+    public void createUser(UserData user){
+        DB.add(user);
     }
     //read
     //update

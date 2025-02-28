@@ -1,14 +1,17 @@
 package server;
 
 import com.google.gson.Gson;
+import org.eclipse.jetty.server.Authentication;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.RegisterResult;
+import service.UserService;
 import spark.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Server {
+    private final UserService userService = new UserService();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -27,12 +30,16 @@ public class Server {
         return Spark.port();
     }
 
-    private Object Register(Request req, Response res) throws IOException {
-        var serializer = new Gson();
-        InputStreamReader inputStreamReader = new InputStreamReader(req.raw().getInputStream());
-        RegisterRequest  newReq = serializer.fromJson(inputStreamReader, RegisterRequest.class);
+    private Object Register(Request req, Response res) {
+        var user = new Gson().fromJson(req.body(), RegisterRequest.class);
+//        user = userService.register(req);
+        //TODO: deal with error checking
+        return new Gson().toJson(user);
 
-        return null;
+        // var pet = new Gson().fromJson(req.body(), Pet.class);
+        //        pet = service.addPet(pet);
+        //        webSocketHandler.makeNoise(pet.name(), pet.sound());
+        //        return new Gson().toJson(pet);
     }
 
 
