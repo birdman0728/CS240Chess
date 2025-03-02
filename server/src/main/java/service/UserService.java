@@ -7,6 +7,7 @@ import requestsAndResults.RegisterResult;
 
 public class UserService {
     MemoryUserDAO memoryDB = new MemoryUserDAO();
+
     public RegisterResult register(RegisterRequest registerRequest){
         RegisterResult result = null;
         //TODO add error checking
