@@ -1,20 +1,29 @@
 package service;
 
+import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
+import model.AuthData;
 import model.UserData;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.RegisterResult;
 
+import java.util.UUID;
+
 public class UserService {
-    MemoryUserDAO memoryDB = new MemoryUserDAO();
+    MemoryUserDAO userDB = new MemoryUserDAO();
+    MemoryAuthDAO authDB = new MemoryAuthDAO();
+
+    private String generateToken(){
+        return UUID.randomUUID().toString();
+    }
 
     public RegisterResult register(RegisterRequest registerRequest){
-        RegisterResult result = null;
         //TODO add error checking
-        memoryDB.createUser(new UserData(registerRequest.username(),registerRequest.password(),registerRequest.email()));
+        String newToken = generateToken();
+        userDB.createUser(new UserData(registerRequest.username(),registerRequest.password(),registerRequest.email()));
+        authDB.createAuth(new AuthData(newToken, registerRequest.username()));
 
-
-        return result;
+        return new RegisterResult(registerRequest.username(), newToken);
     }
 
     //	public LoginResult login(LoginRequest loginRequest) {}
