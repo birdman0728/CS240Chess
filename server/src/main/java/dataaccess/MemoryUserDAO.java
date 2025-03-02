@@ -1,11 +1,10 @@
 package dataaccess;
 
-import model.AuthData;
 import model.UserData;
 
 import java.util.HashSet;
 
-public class userDAO {
+public class MemoryUserDAO {
     //TODO: create a "database" to add to or edit from etc.
     //create
     HashSet<UserData> DB = new HashSet<UserData>();

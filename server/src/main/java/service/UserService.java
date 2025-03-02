@@ -1,12 +1,12 @@
 package service;
 
-import dataaccess.userDAO;
+import dataaccess.MemoryUserDAO;
 import model.UserData;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.RegisterResult;
 
 public class UserService {
-    userDAO memoryDB = new userDAO();
+    MemoryUserDAO memoryDB = new MemoryUserDAO();
     public RegisterResult register(RegisterRequest registerRequest){
         RegisterResult result = null;
         //TODO add error checking
