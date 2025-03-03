@@ -8,7 +8,7 @@ import java.util.Objects;
 public class MemoryUserDAO {
     ////create
     HashSet<UserData> DB = new HashSet<UserData>();
-    public void createUser(UserData user){
+    public void createUser(UserData user) throws DataAccessException{
         //TODO check it doesn't exist
         DB.add(user);
     }
@@ -22,7 +22,7 @@ public class MemoryUserDAO {
             }
         }
         //TODO error throwing?
-        return null;
+        throw new DataAccessException("Username doesn't exist");
     }
 
     public String findEmail(String email) throws DataAccessException{
@@ -32,7 +32,7 @@ public class MemoryUserDAO {
                 return data.email();
             }
         }
-        return null;
+        throw new DataAccessException("Email doesn't exist");
     }
 
     ////update

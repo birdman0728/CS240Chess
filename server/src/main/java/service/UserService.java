@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.AuthData;
@@ -7,6 +8,7 @@ import model.UserData;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.RegisterResult;
 
+import javax.xml.crypto.Data;
 import java.util.UUID;
 
 public class UserService {
@@ -20,8 +22,13 @@ public class UserService {
     public RegisterResult register(RegisterRequest registerRequest){
         //TODO add error checking
         String newToken = generateToken();
-        userDB.createUser(new UserData(registerRequest.username(),registerRequest.password(),registerRequest.email()));
-        authDB.createAuth(new AuthData(newToken, registerRequest.username()));
+        try {
+            userDB.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
+            authDB.createAuth(new AuthData(newToken, registerRequest.username()));
+        }catch(DataAccessException e){
+
+        }
+
 
         return new RegisterResult(registerRequest.username(), newToken);
     }

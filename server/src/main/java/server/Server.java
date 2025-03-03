@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.server.Authentication;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.RegisterResult;
+import service.ClearService;
+import service.GameService;
 import service.UserService;
 import spark.*;
 
@@ -12,6 +14,8 @@ import java.io.InputStreamReader;
 
 public class Server {
     private final UserService userService = new UserService();
+    private final GameService gameService = new GameService();
+    private final ClearService clearService = new ClearService();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -22,15 +26,15 @@ public class Server {
 //        createRoutes();
 
         Spark.post("/user", this::Register);
-        Spark.delete("/db", this::Clear);
-        Spark.post("/session",this::Login);
-        Spark.delete("/session",this::Logout);
-        Spark.get("/game",this::ListGames);
-        Spark.post("/game",this::CreateGame);
-        Spark.put("/game",this::JoinGame);
+//        Spark.delete("/db", this::Clear);
+//        Spark.post("/session",this::Login);
+//        Spark.delete("/session",this::Logout);
+//        Spark.get("/game",this::ListGames);
+//        Spark.post("/game",this::CreateGame);
+//        Spark.put("/game",this::JoinGame);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
+//        Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -41,11 +45,10 @@ public class Server {
 //        user = userService.register(req);
         //TODO: deal with error checking
         return new Gson().toJson(user);
-
     }
 
-    private Object Clear(Request req, Response res) {
-        return null;
+    private void Clear(Request req, Response res) {
+
     }
     private Object Login(Request req, Response res) {
         return null;}
