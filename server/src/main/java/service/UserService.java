@@ -19,7 +19,7 @@ public class UserService {
         return UUID.randomUUID().toString();
     }
 
-    public RegisterResult register(RegisterRequest registerRequest){
+    public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException{
         //TODO add error checking
         String newToken = generateToken();
         try {
@@ -28,7 +28,6 @@ public class UserService {
         }catch(DataAccessException e){
 
         }
-
 
         return new RegisterResult(registerRequest.username(), newToken);
     }
