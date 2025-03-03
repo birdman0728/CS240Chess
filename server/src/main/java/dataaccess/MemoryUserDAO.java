@@ -21,12 +21,10 @@ public class MemoryUserDAO {
                 return data.username();
             }
         }
-        //TODO error throwing?
         throw new DataAccessException("Username doesn't exist");
     }
 
     public String findEmail(String email) throws DataAccessException{
-        //error check
         for(UserData data: DB){
             if(data.email().equals(email)){
                 return data.email();

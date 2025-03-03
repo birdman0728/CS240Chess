@@ -34,4 +34,9 @@ public class UserService {
 
     //	public LoginResult login(LoginRequest loginRequest) {}
     //	public void logout(LogoutRequest logoutRequest) {}
+
+    public void clear(){
+        userDB = new MemoryUserDAO();
+        authDB = new MemoryAuthDAO();
+    }
 }

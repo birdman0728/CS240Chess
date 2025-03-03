@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import org.eclipse.jetty.server.Authentication;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.RegisterResult;
+import requestsAndResults.clearResult;
 import service.ClearService;
 import service.GameService;
 import service.UserService;
@@ -28,7 +29,7 @@ public class Server {
 //        createRoutes();
 
         Spark.post("/user", this::Register);
-//        Spark.delete("/db", this::Clear);
+        Spark.delete("/db", this::Clear);
 //        Spark.post("/session",this::Login);
 //        Spark.delete("/session",this::Logout);
 //        Spark.get("/game",this::ListGames);
@@ -53,8 +54,12 @@ public class Server {
         return new Gson().toJson(user);
     }
 
-    private void Clear(Request req, Response res) {
+    private Object Clear(Request req, Response res) {
+//        clearService.clearAll();
+        userService.clear();
+        gameService.clear();
 
+        return new Gson().toJson(new clearResult());//TODO add response
     }
     private Object Login(Request req, Response res) {
         return null;}
