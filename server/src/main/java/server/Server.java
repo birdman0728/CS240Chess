@@ -22,6 +22,12 @@ public class Server {
 //        createRoutes();
 
         Spark.post("/user", this::Register);
+        Spark.delete("/db", this::Clear);
+        Spark.post("/session",this::Login);
+        Spark.delete("/session",this::Logout);
+        Spark.get("/game",this::ListGames);
+        Spark.post("/game",this::CreateGame);
+        Spark.put("/game",this::JoinGame);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
@@ -36,13 +42,29 @@ public class Server {
         //TODO: deal with error checking
         return new Gson().toJson(user);
 
-        // var pet = new Gson().fromJson(req.body(), Pet.class);
-        //        pet = service.addPet(pet);
-        //        webSocketHandler.makeNoise(pet.name(), pet.sound());
-        //        return new Gson().toJson(pet);
     }
 
+    private Object Clear(Request req, Response res) {
+        return null;
+    }
+    private Object Login(Request req, Response res) {
+        return null;}
+    private Object Logout(Request req, Response res) {
+        return null;}
+    private Object ListGames(Request req, Response res) {
+        return null;}
+    private Object CreateGame(Request req, Response res) {
+        return null;}
+    private Object JoinGame(Request req, Response res) {
+        return null;}
 
+
+
+
+    // var pet = new Gson().fromJson(req.body(), Pet.class);
+    //        pet = service.addPet(pet);
+    //        webSocketHandler.makeNoise(pet.name(), pet.sound());
+    //        return new Gson().toJson(pet);
 
 
 
