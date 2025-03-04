@@ -2,14 +2,20 @@ package dataaccess;
 
 import model.UserData;
 
+import javax.xml.crypto.Data;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class MemoryUserDAO {
+public class MemoryUserDAO implements UserDAO {
     ////create
     HashSet<UserData> DB = new HashSet<UserData>();
     public void createUser(UserData user) throws DataAccessException{
         //TODO check it does exist
+        for(UserData profile : DB){
+            if(user.equals(profile)){
+                throw new DataAccessException("User Already exists");
+            }
+        }
         DB.add(user);
     }
 
