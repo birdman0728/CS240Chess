@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.ErrorResult;
 import requestsAndResults.LoginRequest;
+import requestsAndResults.LogoutRequest;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.clearResult;
 import service.GameService;
@@ -49,7 +50,7 @@ public class Server {
             return new Gson().toJson(userService.register(request));
         }catch(DataAccessException e ){
             res.status(403);
-            res.body("Error: already taken");
+//            res.body("Error: already taken");
             return new Gson().toJson(new ErrorResult("Error: already taken"));
         }
     }
@@ -64,6 +65,7 @@ public class Server {
     private Object Login(Request req, Response res) {
         var user = new Gson().fromJson(req.body(), LoginRequest.class);
         LoginRequest request = new LoginRequest(user.username(),user.password());
+
         try {
             return new Gson().toJson(userService.login(request));
         }catch(DataAccessException e){
@@ -72,7 +74,15 @@ public class Server {
         }
     }
     private Object Logout(Request req, Response res) {
-        return null;}
+        for(String authToken : req.headers()){
+            var user = new Gson().fromJson(authToken, LogoutRequest.class);
+            String test = "testicles";
+        }
+
+//        LogoutRequest request = new LogoutRequest(user.authToken());
+        return null;
+    }
+
     private Object ListGames(Request req, Response res) {
         return null;}
     private Object CreateGame(Request req, Response res) {

@@ -5,10 +5,7 @@ import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
-import requestsAndResults.LoginRequest;
-import requestsAndResults.LoginResult;
-import requestsAndResults.RegisterRequest;
-import requestsAndResults.RegisterResult;
+import requestsAndResults.*;
 
 import javax.xml.crypto.Data;
 import java.util.UUID;
@@ -36,7 +33,9 @@ public class UserService {
         }
         throw new DataAccessException("unauthorized");
     }
-    //	public void logout(LogoutRequest logoutRequest) {}
+    	public LogoutRequest logout(LogoutRequest logoutRequest) throws DataAccessException{
+            return null;
+        }
 
     public void clear(){
         userDB = new MemoryUserDAO();
