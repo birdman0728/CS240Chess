@@ -2,8 +2,8 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import model.ErrorResult;
 import requestsAndResults.RegisterRequest;
-import requestsAndResults.RegisterResult;
 import requestsAndResults.clearResult;
 import service.GameService;
 import service.UserService;
@@ -37,18 +37,24 @@ public class Server {
 
     private Object Register(Request req, Response res) {
         var user = new Gson().fromJson(req.body(), RegisterRequest.class);
+        if(user.username() == null || user.email() == null || user.password() == null){
+            res.status(400);
+//            res.body("Error: bad request");
+            return new Gson().toJson(new ErrorResult("Error: bad request"));
+        }
+
         RegisterRequest request = new RegisterRequest(user.username(),user.password(),user.email());
         try {
             return new Gson().toJson(userService.register(request));
         }catch(DataAccessException e ){
-            //TODO: deal with error checking
-            return null; /////////////
+            res.status(403);
+            res.body("Error: already taken");
+            return new Gson().toJson(new ErrorResult("Error: already taken"));
         }
-//        return new Gson().toJson(result);
+//        return new Gson().toJson(res);
     }
 
     private Object Clear(Request req, Response res) {
-//        clearService.clearAll();
         userService.clear();
         gameService.clear();
 
