@@ -32,9 +32,9 @@ public class UserService {
 
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
         if(userDB.verifyUser(loginRequest.username(), loginRequest.password())){
-
+            return new LoginResult(loginRequest.username(), authDB.findAuth(loginRequest.username()).authToken());
         }
-        return null;
+        throw new DataAccessException("unauthorized");
     }
     //	public void logout(LogoutRequest logoutRequest) {}
 
