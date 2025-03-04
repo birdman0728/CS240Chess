@@ -2,23 +2,16 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import org.eclipse.jetty.server.Authentication;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.RegisterResult;
 import requestsAndResults.clearResult;
-import service.ClearService;
 import service.GameService;
 import service.UserService;
 import spark.*;
 
-import javax.xml.crypto.Data;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 public class Server {
     private final UserService userService = new UserService();
     private final GameService gameService = new GameService();
-    private final ClearService clearService = new ClearService();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -44,14 +37,15 @@ public class Server {
     }
 
     private Object Register(Request req, Response res) {
-        RegisterRequest user = new Gson().fromJson(req.body(), RegisterRequest.class);
-
-//        try {
-////        user = userService.register(user);
-//        }catch(DataAccessException e ){
-//            //TODO: deal with error checking
-//        }
-        return new Gson().toJson(user);
+        var user = new Gson().fromJson(req.body(), RegisterRequest.class);
+        RegisterRequest request = new RegisterRequest(user.username(),user.password(),user.email());
+        try {
+            return new Gson().toJson(userService.register(request));
+        }catch(DataAccessException e ){
+            //TODO: deal with error checking
+            return null; /////////////
+        }
+//        return new Gson().toJson(result);
     }
 
     private Object Clear(Request req, Response res) {

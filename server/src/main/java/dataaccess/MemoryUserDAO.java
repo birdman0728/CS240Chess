@@ -9,7 +9,7 @@ public class MemoryUserDAO {
     ////create
     HashSet<UserData> DB = new HashSet<UserData>();
     public void createUser(UserData user) throws DataAccessException{
-        //TODO check it doesn't exist
+        //TODO check it does exist
         DB.add(user);
     }
 
