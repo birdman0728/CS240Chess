@@ -5,6 +5,8 @@ import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
+import requestsAndResults.LoginRequest;
+import requestsAndResults.LoginResult;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.RegisterResult;
 
@@ -28,7 +30,12 @@ public class UserService {
         return new RegisterResult(registerRequest.username(), newToken);
     }
 
-    //	public LoginResult login(LoginRequest loginRequest) {}
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
+        if(userDB.verifyUser(loginRequest.username(), loginRequest.password())){
+
+        }
+        return null;
+    }
     //	public void logout(LogoutRequest logoutRequest) {}
 
     public void clear(){

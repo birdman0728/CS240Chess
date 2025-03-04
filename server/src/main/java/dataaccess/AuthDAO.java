@@ -7,7 +7,7 @@ public interface AuthDAO {
 
     public void createAuth(AuthData auth) throws DataAccessException;
 
-    public AuthData findAuth(String authData) throws DataAccessException;
+    public AuthData findAuth(String username) throws DataAccessException;
 
     public void updateAuth() throws DataAccessException;
 

@@ -5,9 +5,9 @@ import model.UserData;
 public interface UserDAO {
     public void createUser(UserData user) throws DataAccessException;
 
-    public String findUsername(String username) throws DataAccessException;
+    public Boolean verifyUsername(String username) throws DataAccessException;
 
-    public String findEmail(String email) throws DataAccessException;
+    public Boolean verifyEmail(String email) throws DataAccessException;
 
     public void updateUser() throws DataAccessException;
 

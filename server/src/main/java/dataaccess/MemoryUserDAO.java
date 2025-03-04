@@ -19,24 +19,53 @@ public class MemoryUserDAO implements UserDAO {
         DB.add(user);
     }
 
-    ////read
-    public String findUsername(String username) throws DataAccessException{
-        //error check
-        for(UserData data: DB){
-            if(data.username().equals(username)){
-                return data.username();
-            }
-        }
-        throw new DataAccessException("Username doesn't exist");
-    }
+//    @Override
+//    public String findUser(UserData user) throws DataAccessException {
+//        if(DB.contains(user)){
+//            return
+//        }
+//    }
 
-    public String findEmail(String email) throws DataAccessException{
+    //read
+//    public Boolean verifyUsername(String username) throws DataAccessException{
+//        boolean found = false;
+//        for(UserData data: DB){
+//            if(data.username().equals(username)){
+//                found = true;
+//                break;
+//            }
+//        }
+//        if(!found) {
+//            throw new DataAccessException("Username doesn't exist");
+//        }
+//        return found;
+//    }
+//
+//    public Boolean verifyEmail(String email) throws DataAccessException{
+//        boolean found = false;
+//        for(UserData data: DB){
+//            if(data.email().equals(email)){
+//                found = true;
+//            }
+//        }
+//        if(!found) {
+//            throw new DataAccessException("Email doesn't exist");
+//        }
+//        return found;
+//    }
+
+    public boolean verifyUser(String username, String password) throws DataAccessException{
+        boolean found = false;
         for(UserData data: DB){
-            if(data.email().equals(email)){
-                return data.email();
+            if(data.username().equals(username) && data.password().equals(password)){
+                found = true;
+                break;
             }
         }
-        throw new DataAccessException("Email doesn't exist");
+        if(!found) {
+            throw new DataAccessException("unauthorized");
+        }
+        return found;
     }
 
     ////update

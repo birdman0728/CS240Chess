@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.ErrorResult;
+import requestsAndResults.LoginRequest;
 import requestsAndResults.RegisterRequest;
 import requestsAndResults.clearResult;
 import service.GameService;
@@ -22,7 +23,7 @@ public class Server {
 
         Spark.post("/user", this::Register);
         Spark.delete("/db", this::Clear);
-//        Spark.post("/session",this::Login);
+        Spark.post("/session",this::Login);
 //        Spark.delete("/session",this::Logout);
 //        Spark.get("/game",this::ListGames);
 //        Spark.post("/game",this::CreateGame);
@@ -51,17 +52,23 @@ public class Server {
             res.body("Error: already taken");
             return new Gson().toJson(new ErrorResult("Error: already taken"));
         }
-//        return new Gson().toJson(res);
     }
 
     private Object Clear(Request req, Response res) {
         userService.clear();
         gameService.clear();
 
-        return new Gson().toJson(new clearResult());//TODO add response
+        return new Gson().toJson(new clearResult());
     }
     private Object Login(Request req, Response res) {
-        return null;}
+        var user = new Gson().fromJson(req.body(), LoginRequest.class);
+        LoginRequest request = new LoginRequest(user.username(),user.password());
+        try {
+            return new Gson().toJson(userService.login(request));
+        }catch(DataAccessException e){
+            return null;
+        }
+    }
     private Object Logout(Request req, Response res) {
         return null;}
     private Object ListGames(Request req, Response res) {
