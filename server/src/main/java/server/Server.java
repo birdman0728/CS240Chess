@@ -75,11 +75,11 @@ public class Server {
     }
     private Object Logout(Request req, Response res) {
 //        for(String authToken : req.headers()){
-            var user = new Gson().fromJson(req.headers(), LogoutRequest.class); //TODO figure out how to deserialize out of headers
+//            var user = new Gson().fromJson(req.headers(), LogoutRequest.class); //TODO figure out how to deserialize out of headers
 //            String test = "testicles";
 //        }
 
-        LogoutRequest request = new LogoutRequest(user.authToken());
+//        LogoutRequest request = new LogoutRequest(user.authToken());
         return null;
     }
 
