@@ -1,4 +1,4 @@
-package RequestsAndResults;
+package requestsandresults;
 
 public record RegisterResult(
         String username,

@@ -5,7 +5,7 @@ import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
-import RequestsAndResults.*;
+import requestsandresults.*;
 
 import java.util.UUID;
 

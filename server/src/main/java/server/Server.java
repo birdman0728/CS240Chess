@@ -3,10 +3,9 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.ErrorResult;
-import RequestsAndResults.LoginRequest;
-import RequestsAndResults.LogoutRequest;
-import RequestsAndResults.RegisterRequest;
-import RequestsAndResults.ClearResult;
+import requestsandresults.LoginRequest;
+import requestsandresults.RegisterRequest;
+import requestsandresults.ClearResult;
 import service.GameService;
 import service.UserService;
 import spark.*;
@@ -25,7 +24,7 @@ public class Server {
         Spark.post("/user", this::register);
         Spark.delete("/db", this::clear);
         Spark.post("/session",this::login);
-        Spark.delete("/session",this::Logout);
+        Spark.delete("/session",this::logout);
 //        Spark.get("/game",this::ListGames);
 //        Spark.post("/game",this::CreateGame);
 //        Spark.put("/game",this::JoinGame);
@@ -73,7 +72,7 @@ public class Server {
             return new Gson().toJson(new ErrorResult("Error: unauthorized"));
         }
     }
-    private Object Logout(Request req, Response res) {
+    private Object logout(Request req, Response res) {
 //        for(String authToken : req.headers()){
 //            var user = new Gson().fromJson(req.headers(), LogoutRequest.class); //TODO figure out how to deserialize out of headers
 //            String test = "testicles";
