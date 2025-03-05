@@ -153,6 +153,223 @@ public class ChessPiece {
         return validMoves;
     }
 
+    private Collection<ChessMove> knightMove(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves){
+        int y = myPosition.getRow();
+        int x = myPosition.getColumn();
+
+
+        if(y + 2  <= 8 && x + 1  <= 8) {
+            if (checkNull(board, new ChessPosition(y + 2, x + 1)) || checkPieceColor(board, new ChessPosition(y + 2, x + 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 2, x + 1), null));
+            }
+        }
+
+        if(y + 2  <= 8 && x - 1 >= 1) {
+            if (checkNull(board, new ChessPosition(y + 2, x - 1)) || checkPieceColor(board, new ChessPosition(y + 2, x - 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 2, x - 1), null));
+            }
+        }
+
+        if(y + 1  <= 8 && x - 2 >= 1) {
+            if (checkNull(board, new ChessPosition(y + 1, x - 2)) || checkPieceColor(board, new ChessPosition(y + 1, x - 2))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x - 2), null));
+            }
+        }
+
+        if(y - 1 >= 1 && x - 2 >= 1) {
+            if (checkNull(board, new ChessPosition(y - 1, x - 2)) || checkPieceColor(board, new ChessPosition(y - 1, x - 2))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x - 2), null));
+            }
+        }
+
+        if(y - 2 >= 1 && x - 1 >= 1) {
+            if (checkNull(board, new ChessPosition(y - 2, x - 1)) || checkPieceColor(board, new ChessPosition(y - 2, x - 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 2, x - 1), null));
+            }
+        }
+
+        if(y - 2 >= 1 && x + 1  <= 8) {
+            if (checkNull(board, new ChessPosition(y - 2, x + 1)) || checkPieceColor(board, new ChessPosition(y - 2, x + 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 2, x + 1), null));
+            }
+        }
+
+        if(y - 1 >= 1 && x + 2  <= 8) {
+            if (checkNull(board, new ChessPosition(y - 1, x + 2)) || checkPieceColor(board, new ChessPosition(y - 1, x + 2))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 2), null));
+            }
+        }
+
+        if(y + 1  <= 8 && x + 2  <= 8) {
+            if (checkNull(board, new ChessPosition(y + 1, x + 2)) || checkPieceColor(board, new ChessPosition(y + 1, x + 2))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x + 2), null));
+            }
+        }
+
+        return validMoves;
+    }
+
+    private Collection<ChessMove> kingMove(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves){
+        int y = myPosition.getRow();
+        int x = myPosition.getColumn();
+
+        //up-right
+        if(y+1<= 8 && x+1 <= 8){
+            if (checkNull(board, new ChessPosition(y + 1, x + 1)) || checkPieceColor(board, new ChessPosition(y + 1, x + 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y+ 1, x +1), null));
+            }
+        }
+
+        //down-left
+        if(y-1>=1 && x-1>=1) {
+            if (checkNull(board, new ChessPosition(y - 1, x - 1)) || checkPieceColor(board, new ChessPosition(y - 1, x - 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x - 1), null));
+            }
+        }
+
+        //down-right
+        if(y-1>=1 && x+1<=8) {
+            if (checkNull(board, new ChessPosition(y - 1, x + 1)) || checkPieceColor(board, new ChessPosition(y - 1, x + 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), null));
+            }
+        }
+
+        //up-left
+        if(y+1 <=8 && x-1>=1) {
+            if (checkNull(board, new ChessPosition(y + 1, x - 1)) || checkPieceColor(board, new ChessPosition(y + 1, x - 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x - 1), null));
+            }
+        }
+
+        //up
+        if(y+1<=8) {
+            if (checkNull(board, new ChessPosition(y + 1, myPosition.getColumn())) || checkPieceColor(board, new ChessPosition(y + 1, x))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, myPosition.getColumn()), null));
+            }
+        }
+
+        //down
+        if(y-1>=1) {
+            if (checkNull(board, new ChessPosition(y - 1, myPosition.getColumn())) || checkPieceColor(board, new ChessPosition(y - 1, x))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, myPosition.getColumn()), null));
+            }
+        }
+
+        //right
+        if(x+1<=8) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow(), x + 1)) || checkPieceColor(board, new ChessPosition(y, x + 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), x + 1), null));
+            }
+        }
+
+        //left
+        if(x-1>=1) {
+            if (checkNull(board, new ChessPosition(myPosition.getRow(), x - 1)) || checkPieceColor(board, new ChessPosition(y, x - 1))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), x - 1), null));
+            }
+        }
+        return validMoves;
+    }
+
+    private Collection<ChessMove> pawnMove(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> validMoves){
+        int y = myPosition.getRow();
+        int x = myPosition.getColumn();
+        ////white
+        if(pieceColor == ChessGame.TeamColor.WHITE) {
+            //normal forward
+            if (y + 1 < 8) {
+                if (checkNull(board, new ChessPosition(y + 1, x))) {
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), null));
+                }
+            } else if(y+1 == 8){
+                if (checkNull(board, new ChessPosition(y + 1, x))) {
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), PieceType.QUEEN ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), PieceType.ROOK ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), PieceType.BISHOP ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), PieceType.KNIGHT ));
+                }
+            }
+            //two move
+            if (y == 2 && checkNull(board, new ChessPosition(y + 2, x)) && checkNull(board, new ChessPosition(y + 1, x))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 2, x), null));
+            }
+            //capture right
+            if (y + 1 < 8 && x + 1 < 8) {
+                if (!checkNull(board, new ChessPosition(y + 1, x + 1)) && (checkPieceColor(board, new ChessPosition(y + 1, x + 1)))) {
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x + 1), null));
+
+                }
+            }else if(y+1 == 8 && x + 1 < 8){
+                if (!checkNull(board, new ChessPosition(y + 1, x+1))) {
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x+1), PieceType.QUEEN ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x+1), PieceType.ROOK ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x+1), PieceType.BISHOP ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x+1), PieceType.KNIGHT ));
+                }
+            }
+            //capture left
+            if (y + 1 < 8 && x - 1 > 1) {
+                if (!checkNull(board, new ChessPosition(y + 1, x - 1)) && checkPieceColor(board, new ChessPosition(y + 1, x - 1))) {
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x - 1), null));
+                }
+            }else if(y+1 == 8 && x - 1 > 1){
+                if (!checkNull(board, new ChessPosition(y + 1, x-1))) {
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x-1), PieceType.QUEEN ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x-1), PieceType.ROOK ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x-1), PieceType.BISHOP ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x-1), PieceType.KNIGHT ));
+                }
+            }
+        }
+        ////black
+        if(pieceColor == ChessGame.TeamColor.BLACK) {
+            //normal forward
+            if (y - 1 > 1) {
+                if (checkNull(board, new ChessPosition(y - 1, x))) {
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), null));
+                }
+            } else if(y-1 == 1){
+                if (checkNull(board, new ChessPosition(y - 1, x))) {
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), PieceType.QUEEN ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), PieceType.ROOK ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), PieceType.BISHOP ));
+                    validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), PieceType.KNIGHT ));
+                }
+            }
+            //two move
+            if (y == 7 && checkNull(board, new ChessPosition(y - 2, x)) && checkNull(board, new ChessPosition(y - 1, x))) {
+                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 2, x), null));
+            }
+            //capture right
+            if (y - 1 > 1 && x + 1 < 8) {
+                if (!checkNull(board, new ChessPosition(y - 1, x + 1)) && checkPieceColor(board, new ChessPosition(y - 1, x + 1))) {
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), null));
+                }
+            }else if(y-1 == 1 && x + 1 <= 8){
+                if (!checkNull(board, new ChessPosition(y - 1, x + 1)) && checkPieceColor(board, new ChessPosition(y - 1, x + 1))) {
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), PieceType.QUEEN ));
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), PieceType.ROOK ));
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), PieceType.BISHOP ));
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), PieceType.KNIGHT ));
+                }
+            }
+            //capture left
+            if (y - 1 > 1 && x - 1 > 1) {
+                if (!checkNull(board, new ChessPosition(y - 1, x - 1)) && checkPieceColor(board, new ChessPosition(y - 1, x - 1))) {
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x - 1), null));
+                }
+            }else if(y-1 == 1 && x - 1 >= 1){
+                if (!checkNull(board, new ChessPosition(y - 1, x - 1)) && checkPieceColor(board, new ChessPosition(y - 1, x - 1))) {
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x-1), PieceType.QUEEN ));
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x-1), PieceType.ROOK ));
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x-1), PieceType.BISHOP ));
+                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x-1), PieceType.KNIGHT ));
+                }
+            }
+        }
+        return validMoves;
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -163,67 +380,9 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection <ChessMove> validMoves = new HashSet<>();
 
-        int y = myPosition.getRow();
-        int x = myPosition.getColumn();
-
         switch(type) {
             case KING:
-
-                //up-right
-                if(y+1<= 8 && x+1 <= 8){
-                    if (checkNull(board, new ChessPosition(y + 1, x + 1)) || checkPieceColor(board, new ChessPosition(y + 1, x + 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y+ 1, x +1), null));
-                    }
-                }
-
-                //down-left
-                if(y-1>=1 && x-1>=1) {
-                    if (checkNull(board, new ChessPosition(y - 1, x - 1)) || checkPieceColor(board, new ChessPosition(y - 1, x - 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x - 1), null));
-                    }
-                }
-
-                //down-right
-                if(y-1>=1 && x+1<=8) {
-                    if (checkNull(board, new ChessPosition(y - 1, x + 1)) || checkPieceColor(board, new ChessPosition(y - 1, x + 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), null));
-                    }
-                }
-
-                //up-left
-                if(y+1 <=8 && x-1>=1) {
-                    if (checkNull(board, new ChessPosition(y + 1, x - 1)) || checkPieceColor(board, new ChessPosition(y + 1, x - 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x - 1), null));
-                    }
-                }
-
-                //up
-                if(y+1<=8) {
-                    if (checkNull(board, new ChessPosition(y + 1, myPosition.getColumn())) || checkPieceColor(board, new ChessPosition(y + 1, x))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, myPosition.getColumn()), null));
-                    }
-                }
-
-                //down
-                if(y-1>=1) {
-                    if (checkNull(board, new ChessPosition(y - 1, myPosition.getColumn())) || checkPieceColor(board, new ChessPosition(y - 1, x))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, myPosition.getColumn()), null));
-                    }
-                }
-
-                //right
-                if(x+1<=8) {
-                    if (checkNull(board, new ChessPosition(myPosition.getRow(), x + 1)) || checkPieceColor(board, new ChessPosition(y, x + 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), x + 1), null));
-                    }
-                }
-
-                //left
-                if(x-1>=1) {
-                    if (checkNull(board, new ChessPosition(myPosition.getRow(), x - 1)) || checkPieceColor(board, new ChessPosition(y, x - 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow(), x - 1), null));
-                    }
-                }
+                validMoves.addAll(kingMove(board, myPosition, validMoves));
 
                 break;
 
@@ -240,58 +399,7 @@ public class ChessPiece {
 
 
             case KNIGHT:
-                y = myPosition.getRow();
-                x = myPosition.getColumn();
-
-
-                if(y + 2  <= 8 && x + 1  <= 8) {
-                    if (checkNull(board, new ChessPosition(y + 2, x + 1)) || checkPieceColor(board, new ChessPosition(y + 2, x + 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 2, x + 1), null));
-                    }
-                }
-
-                if(y + 2  <= 8 && x - 1 >= 1) {
-                    if (checkNull(board, new ChessPosition(y + 2, x - 1)) || checkPieceColor(board, new ChessPosition(y + 2, x - 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 2, x - 1), null));
-                    }
-                }
-
-                if(y + 1  <= 8 && x - 2 >= 1) {
-                    if (checkNull(board, new ChessPosition(y + 1, x - 2)) || checkPieceColor(board, new ChessPosition(y + 1, x - 2))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x - 2), null));
-                    }
-                }
-
-                if(y - 1 >= 1 && x - 2 >= 1) {
-                    if (checkNull(board, new ChessPosition(y - 1, x - 2)) || checkPieceColor(board, new ChessPosition(y - 1, x - 2))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x - 2), null));
-                    }
-                }
-
-                if(y - 2 >= 1 && x - 1 >= 1) {
-                    if (checkNull(board, new ChessPosition(y - 2, x - 1)) || checkPieceColor(board, new ChessPosition(y - 2, x - 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 2, x - 1), null));
-                    }
-                }
-
-                if(y - 2 >= 1 && x + 1  <= 8) {
-                    if (checkNull(board, new ChessPosition(y - 2, x + 1)) || checkPieceColor(board, new ChessPosition(y - 2, x + 1))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 2, x + 1), null));
-                    }
-                }
-
-                if(y - 1 >= 1 && x + 2  <= 8) {
-                    if (checkNull(board, new ChessPosition(y - 1, x + 2)) || checkPieceColor(board, new ChessPosition(y - 1, x + 2))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 2), null));
-                    }
-                }
-
-                if(y + 1  <= 8 && x + 2  <= 8) {
-                    if (checkNull(board, new ChessPosition(y + 1, x + 2)) || checkPieceColor(board, new ChessPosition(y + 1, x + 2))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x + 2), null));
-                    }
-                }
-
+                validMoves.addAll(knightMove(board, myPosition, validMoves));
                 break;
 
 
@@ -301,119 +409,8 @@ public class ChessPiece {
 
 
             case PAWN:
-                y = myPosition.getRow();
-                x = myPosition.getColumn();
+                validMoves.addAll(pawnMove(board, myPosition, validMoves));
 
-                ////white
-                if(pieceColor == ChessGame.TeamColor.WHITE) {
-                    //normal forward
-                    if (y + 1 < 8) {
-                        if (checkNull(board, new ChessPosition(y + 1, x))) {
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), null));
-                        }
-                    } else if(y+1 == 8){
-                        if (checkNull(board, new ChessPosition(y + 1, x))) {
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), PieceType.QUEEN ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), PieceType.ROOK ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), PieceType.BISHOP ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x), PieceType.KNIGHT ));
-                        }
-                    }
-                    //two move
-                    if (y == 2 && checkNull(board, new ChessPosition(y + 2, x)) && checkNull(board, new ChessPosition(y + 1, x))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 2, x), null));
-                    }
-                    //capture right
-                    if (y + 1 < 8 && x + 1 < 8) {
-                        if (!checkNull(board, new ChessPosition(y + 1, x + 1))) {
-                            if (checkPieceColor(board, new ChessPosition(y + 1, x + 1))) {
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x + 1), null));
-                            }
-                        }
-                    }else if(y+1 == 8 && x + 1 < 8){
-                        if (!checkNull(board, new ChessPosition(y + 1, x+1))) {
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x+1), PieceType.QUEEN ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x+1), PieceType.ROOK ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x+1), PieceType.BISHOP ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x+1), PieceType.KNIGHT ));
-                        }
-                    }
-                    //capture left
-                    if (y + 1 < 8 && x - 1 > 1) {
-                        if (!checkNull(board, new ChessPosition(y + 1, x - 1))) {
-                            if (checkPieceColor(board, new ChessPosition(y + 1, x - 1))) {
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x - 1), null));
-                            }
-                        }
-                    }else if(y+1 == 8 && x - 1 > 1){
-                        if (!checkNull(board, new ChessPosition(y + 1, x-1))) {
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x-1), PieceType.QUEEN ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x-1), PieceType.ROOK ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x-1), PieceType.BISHOP ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y + 1, x-1), PieceType.KNIGHT ));
-                        }
-                    }
-                }
-
-                //promotion
-
-
-                ////black
-                if(pieceColor == ChessGame.TeamColor.BLACK) {
-                    //normal forward
-                    if (y - 1 > 1) {
-                        if (checkNull(board, new ChessPosition(y - 1, x))) {
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), null));
-                        }
-                    } else if(y-1 == 1){
-                        if (checkNull(board, new ChessPosition(y - 1, x))) {
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), PieceType.QUEEN ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), PieceType.ROOK ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), PieceType.BISHOP ));
-                            validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x), PieceType.KNIGHT ));
-                        }
-                    }
-
-                    //two move
-                    if (y == 7 && checkNull(board, new ChessPosition(y - 2, x)) && checkNull(board, new ChessPosition(y - 1, x))) {
-                        validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 2, x), null));
-                    }
-
-                    //capture right
-                    if (y - 1 > 1 && x + 1 < 8) {
-                        if (!checkNull(board, new ChessPosition(y - 1, x + 1))) {
-                            if (checkPieceColor(board, new ChessPosition(y - 1, x + 1))) {
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), null));
-                            }
-                        }
-                    }else if(y-1 == 1 && x + 1 <= 8){
-                        if (!checkNull(board, new ChessPosition(y - 1, x + 1))) {
-                            if (checkPieceColor(board, new ChessPosition(y - 1, x + 1))) {
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), PieceType.QUEEN ));
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), PieceType.ROOK ));
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), PieceType.BISHOP ));
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x + 1), PieceType.KNIGHT ));
-                            }
-                        }
-                    }
-                    //capture left
-                    if (y - 1 > 1 && x - 1 > 1) {
-                        if (!checkNull(board, new ChessPosition(y - 1, x - 1))) {
-                            if (checkPieceColor(board, new ChessPosition(y - 1, x - 1))) {
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x - 1), null));
-                            }
-                        }
-                    }else if(y-1 == 1 && x - 1 >= 1){
-                        if (!checkNull(board, new ChessPosition(y - 1, x - 1))) {
-                            if (checkPieceColor(board, new ChessPosition(y - 1, x - 1))) {
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x-1), PieceType.QUEEN ));
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x-1), PieceType.ROOK ));
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x-1), PieceType.BISHOP ));
-                                validMoves.add(new ChessMove(myPosition, new ChessPosition(y - 1, x-1), PieceType.KNIGHT ));
-                            }
-                        }
-                    }
-                }
                 break;
         }
         return validMoves;
