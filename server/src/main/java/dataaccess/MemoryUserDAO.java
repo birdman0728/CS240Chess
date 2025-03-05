@@ -2,21 +2,20 @@ package dataaccess;
 
 import model.UserData;
 
-import javax.xml.crypto.Data;
 import java.util.HashSet;
 import java.util.Objects;
 
 public class MemoryUserDAO implements UserDAO {
     ////create
-    HashSet<UserData> DB = new HashSet<UserData>();
+    HashSet<UserData> db = new HashSet<UserData>();
     public void createUser(UserData user) throws DataAccessException{
         //TODO check it does exist
-        for(UserData profile : DB){
+        for(UserData profile : db){
             if(user.equals(profile)){
                 throw new DataAccessException("User Already exists");
             }
         }
-        DB.add(user);
+        db.add(user);
     }
 
 //    @Override
@@ -56,7 +55,7 @@ public class MemoryUserDAO implements UserDAO {
 
     public boolean verifyUser(String username, String password) throws DataAccessException{
         boolean found = false;
-        for(UserData data: DB){
+        for(UserData data: db){
             if(data.username().equals(username) && data.password().equals(password)){
                 found = true;
                 break;
@@ -94,11 +93,11 @@ public class MemoryUserDAO implements UserDAO {
             return false;
         }
         MemoryUserDAO that = (MemoryUserDAO) o;
-        return Objects.equals(DB, that.DB);
+        return Objects.equals(db, that.db);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(DB);
+        return Objects.hash(db);
     }
 }

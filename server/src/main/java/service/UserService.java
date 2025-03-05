@@ -5,9 +5,8 @@ import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
-import requestsAndResults.*;
+import RequestsAndResults.*;
 
-import javax.xml.crypto.Data;
 import java.util.UUID;
 
 public class UserService {

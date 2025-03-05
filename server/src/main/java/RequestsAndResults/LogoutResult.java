@@ -1,4 +1,4 @@
-package requestsAndResults;
+package RequestsAndResults;
 
 public record LogoutResult() {
 }

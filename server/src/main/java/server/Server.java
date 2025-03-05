@@ -3,10 +3,10 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.ErrorResult;
-import requestsAndResults.LoginRequest;
-import requestsAndResults.LogoutRequest;
-import requestsAndResults.RegisterRequest;
-import requestsAndResults.clearResult;
+import RequestsAndResults.LoginRequest;
+import RequestsAndResults.LogoutRequest;
+import RequestsAndResults.RegisterRequest;
+import RequestsAndResults.ClearResult;
 import service.GameService;
 import service.UserService;
 import spark.*;
@@ -22,9 +22,9 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
 
-        Spark.post("/user", this::Register);
-        Spark.delete("/db", this::Clear);
-        Spark.post("/session",this::Login);
+        Spark.post("/user", this::register);
+        Spark.delete("/db", this::clear);
+        Spark.post("/session",this::login);
         Spark.delete("/session",this::Logout);
 //        Spark.get("/game",this::ListGames);
 //        Spark.post("/game",this::CreateGame);
@@ -37,7 +37,7 @@ public class Server {
         return Spark.port();
     }
 
-    private Object Register(Request req, Response res) {
+    private Object register(Request req, Response res) {
         var user = new Gson().fromJson(req.body(), RegisterRequest.class);
         if(user.username() == null || user.email() == null || user.password() == null){
             res.status(400);
@@ -50,19 +50,19 @@ public class Server {
             return new Gson().toJson(userService.register(request));
         }catch(DataAccessException e ){
             res.status(403);
-//            res.body("Error: already taken");
+            res.body("Error: already taken");
             return new Gson().toJson(new ErrorResult("Error: already taken"));
         }
     }
 
-    private Object Clear(Request req, Response res) {
+    private Object clear(Request req, Response res) {
         userService.clear();
         gameService.clear();
 
-        return new Gson().toJson(new clearResult());
+        return new Gson().toJson(new ClearResult());
     }
 
-    private Object Login(Request req, Response res) {
+    private Object login(Request req, Response res) {
         var user = new Gson().fromJson(req.body(), LoginRequest.class);
         LoginRequest request = new LoginRequest(user.username(),user.password());
 
@@ -74,25 +74,22 @@ public class Server {
         }
     }
     private Object Logout(Request req, Response res) {
-        for(String authToken : req.headers()){
-            var user = new Gson().fromJson(authToken, LogoutRequest.class);
-            String test = "testicles";
-        }
+//        for(String authToken : req.headers()){
+            var user = new Gson().fromJson(req.headers(), LogoutRequest.class); //TODO figure out how to deserialize out of headers
+//            String test = "testicles";
+//        }
 
-//        LogoutRequest request = new LogoutRequest(user.authToken());
+        LogoutRequest request = new LogoutRequest(user.authToken());
         return null;
     }
 
-    private Object ListGames(Request req, Response res) {
+    private Object listGames(Request req, Response res) {
         return null;}
-    private Object CreateGame(Request req, Response res) {
+    private Object createGame(Request req, Response res) {
         return null;}
-    private Object JoinGame(Request req, Response res) {
+    private Object joinGame(Request req, Response res) {
         return null;}
-
-
-
-
+    
     // var pet = new Gson().fromJson(req.body(), Pet.class);
     //        pet = service.addPet(pet);
     //        webSocketHandler.makeNoise(pet.name(), pet.sound());

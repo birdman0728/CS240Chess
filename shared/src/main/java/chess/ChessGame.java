@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class ChessGame {
     ChessBoard curBoard = new ChessBoard();
-    TeamColor TeamTurn = TeamColor.WHITE;
+    TeamColor teamTurn = TeamColor.WHITE;
     public ChessGame() {
         curBoard.resetBoard();
     }
@@ -21,7 +21,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        return TeamTurn;
+        return teamTurn;
     }
 
     /**
@@ -30,7 +30,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        TeamTurn = team;
+        teamTurn = team;
     }
 
     /**
@@ -80,7 +80,7 @@ public class ChessGame {
     private void unmovePiece(ChessMove move, ChessPiece replacementPiece){
         ChessPiece oldPiece;
         if(move.getPromotionPiece() == null){
-            oldPiece = new ChessPiece(curBoard.getPiece(move.getEndPosition()).getTeamColor(), curBoard.getPiece(move.getEndPosition()).getPieceType());
+            oldPiece=new ChessPiece(curBoard.getPiece(move.getEndPosition()).getTeamColor(),curBoard.getPiece(move.getEndPosition()).getPieceType());
         }else{
             oldPiece = new ChessPiece(curBoard.getPiece(move.getEndPosition()).getTeamColor(), ChessPiece.PieceType.PAWN);
         }
@@ -117,7 +117,7 @@ public class ChessGame {
     private void movePiece(ChessMove move) {
         ChessPiece newPiece;
         if(move.getPromotionPiece() == null){
-            newPiece = new ChessPiece(curBoard.getPiece(move.startPosition).getTeamColor(), curBoard.getPiece(move.getStartPosition()).getPieceType());
+            newPiece = new ChessPiece(curBoard.getPiece(move.startPosition).getTeamColor(),curBoard.getPiece(move.getStartPosition()).getPieceType());
         }else{
             newPiece = new ChessPiece(curBoard.getPiece(move.startPosition).getTeamColor(), move.getPromotionPiece());
         }
@@ -230,19 +230,19 @@ public class ChessGame {
             return false;
         }
         ChessGame chessGame = (ChessGame) o;
-        return Objects.equals(curBoard, chessGame.curBoard) && TeamTurn == chessGame.TeamTurn;
+        return Objects.equals(curBoard, chessGame.curBoard) && teamTurn == chessGame.teamTurn;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(curBoard, TeamTurn);
+        return Objects.hash(curBoard, teamTurn);
     }
 
     @Override
     public String toString() {
         return "ChessGame{" +
                 "curBoard=" + curBoard +
-                ", TeamTurn=" + TeamTurn +
+                ", TeamTurn=" + teamTurn +
                 '}';
     }
 }
