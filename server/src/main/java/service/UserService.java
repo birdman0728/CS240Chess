@@ -27,14 +27,18 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
-        if(userDB.verifyUser(loginRequest.username(), loginRequest.password())){
+        if(userDB.verifyUser(loginRequest.username(), loginRequest.password())){//verifying user's username and password
             return new LoginResult(loginRequest.username(), authDB.findAuth(loginRequest.username()).authToken());
         }
         throw new DataAccessException("unauthorized");
     }
-    	public LogoutRequest logout(LogoutRequest logoutRequest) throws DataAccessException{
-            return null;
+    public LogoutResult logout(LogoutRequest logoutRequest) throws DataAccessException {
+        if (authDB.verifyAuth(logoutRequest.authToken())) {
+            authDB.deleteAuth(logoutRequest.authToken());
+            return new LogoutResult();
         }
+        throw new DataAccessException("unauthorized");
+    }
 
     public void clear(){
         userDB = new MemoryUserDAO();

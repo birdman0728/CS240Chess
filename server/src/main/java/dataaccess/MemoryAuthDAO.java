@@ -2,6 +2,7 @@ package dataaccess;
 
 import model.AuthData;
 
+import javax.xml.crypto.Data;
 import java.util.HashSet;
 
 public class MemoryAuthDAO implements AuthDAO{
@@ -21,14 +22,23 @@ public class MemoryAuthDAO implements AuthDAO{
         throw new DataAccessException("unauthorized");
     }
 
+    public boolean verifyAuth(String authToken) throws DataAccessException {
+        for(AuthData data: db){
+            if (data.authToken().equals(authToken)){
+                return true;
+            }
+        }
+        throw new DataAccessException("unauthorized");
+    }
+
     @Override
     public void updateAuth() throws DataAccessException {
 
     }
 
     @Override
-    public void deleteAuth() throws DataAccessException {
-
+    public void deleteAuth(String authToken) throws DataAccessException {
+        db.removeIf(data -> data.authToken().equals(authToken));
     }
 
 }

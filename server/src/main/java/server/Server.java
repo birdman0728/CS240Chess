@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.ErrorResult;
 import requestsandresults.LoginRequest;
+import requestsandresults.LogoutRequest;
 import requestsandresults.RegisterRequest;
 import requestsandresults.ClearResult;
 import service.GameService;
@@ -73,13 +74,17 @@ public class Server {
         }
     }
     private Object logout(Request req, Response res) {
-//        for(String authToken : req.headers()){
-//            var user = new Gson().fromJson(req.headers(), LogoutRequest.class); //TODO figure out how to deserialize out of headers
-//            String test = "testicles";
-//        }
+        String authToken = req.headers("authorization");
+//        var user = new Gson().fromJson(req.headers("Authorization: <authToken>"), LogoutRequest.class); //TODO figure out how to deserialize out of headers
 
-//        LogoutRequest request = new LogoutRequest(user.authToken());
-        return null;
+        LogoutRequest request = new LogoutRequest(authToken);
+        try{
+            res.status(200);
+            return new Gson().toJson(userService.logout(request));
+        }catch(DataAccessException e){
+            res.status(401);
+            return new Gson().toJson(new ErrorResult("Error: unauthorized"));
+        }
     }
 
     private Object listGames(Request req, Response res) {
