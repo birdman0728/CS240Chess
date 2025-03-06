@@ -75,7 +75,6 @@ public class Server {
     }
     private Object logout(Request req, Response res) {
         String authToken = req.headers("authorization");
-//        var user = new Gson().fromJson(req.headers("Authorization: <authToken>"), LogoutRequest.class); //TODO figure out how to deserialize out of headers
 
         LogoutRequest request = new LogoutRequest(authToken);
         try{

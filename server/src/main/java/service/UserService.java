@@ -28,7 +28,9 @@ public class UserService {
 
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
         if(userDB.verifyUser(loginRequest.username(), loginRequest.password())){//verifying user's username and password
-            return new LoginResult(loginRequest.username(), authDB.findAuth(loginRequest.username()).authToken());
+            String newToken = generateToken();
+            authDB.createAuth(new AuthData(newToken, loginRequest.username()));
+            return new LoginResult(loginRequest.username(), newToken);
         }
         throw new DataAccessException("unauthorized");
     }
