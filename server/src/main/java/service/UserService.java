@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
-        if(userDB.verifyUser(loginRequest.username(), loginRequest.password())){//verifying user's username and password
+        if(verifyUser(loginRequest)){//verifying user's username and password
             String newToken = generateToken();
             authDB.createAuth(new AuthData(newToken, loginRequest.username()));
             return new LoginResult(loginRequest.username(), newToken);
@@ -35,11 +35,19 @@ public class UserService {
         throw new DataAccessException("unauthorized");
     }
     public LogoutResult logout(LogoutRequest logoutRequest) throws DataAccessException {
-        if (authDB.verifyAuth(logoutRequest.authToken())) {
+        if (verifyAuth(logoutRequest.authToken())) {
             authDB.deleteAuth(logoutRequest.authToken());
             return new LogoutResult();
         }
         throw new DataAccessException("unauthorized");
+    }
+
+    public boolean verifyUser(LoginRequest request) throws DataAccessException {
+        return userDB.verifyUser(request);
+    }
+
+    public boolean verifyAuth(String authToken) throws DataAccessException {
+        return authDB.verifyAuth(authToken);
     }
 
     public void clear(){

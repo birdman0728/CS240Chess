@@ -3,10 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.ErrorResult;
-import requestsandresults.LoginRequest;
-import requestsandresults.LogoutRequest;
-import requestsandresults.RegisterRequest;
-import requestsandresults.ClearResult;
+import requestsandresults.*;
 import service.GameService;
 import service.UserService;
 import spark.*;
@@ -26,9 +23,9 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/session",this::login);
         Spark.delete("/session",this::logout);
-//        Spark.get("/game",this::ListGames);
-//        Spark.post("/game",this::CreateGame);
-//        Spark.put("/game",this::JoinGame);
+//        Spark.get("/game",this::listGames);
+        Spark.post("/game",this::createGame);
+//        Spark.put("/game",this::joinGame);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
 //        Spark.init();
@@ -78,7 +75,6 @@ public class Server {
 
         LogoutRequest request = new LogoutRequest(authToken);
         try{
-            res.status(200);
             return new Gson().toJson(userService.logout(request));
         }catch(DataAccessException e){
             res.status(401);
@@ -87,9 +83,29 @@ public class Server {
     }
 
     private Object listGames(Request req, Response res) {
-        return null;}
+        ListRequest request = new ListRequest(req.headers("authorization"));
+        try{
+            userService.verifyAuth(request.authToken());
+            return new Gson().toJson(gameService.listGames());
+        }catch(DataAccessException e){
+            res.status(401);
+            return new Gson().toJson(new ErrorResult("Error: unauthorized"));
+        }
+    }
     private Object createGame(Request req, Response res) {
-        return null;}
+        String authToken = req.headers("authorization");
+        var user = new Gson().fromJson(req.body(), CreateRequest.class);
+        //TODO: check for bad request
+
+        CreateRequest request = new CreateRequest(authToken, user.gameName());
+        try{
+            userService.verifyAuth(request.authToken());
+            return new Gson().toJson(gameService.createGame(request));
+        }catch(DataAccessException e){
+            res.status(401);
+            return new Gson().toJson(new ErrorResult("Error: unauthorized"));
+        }
+    }
     private Object joinGame(Request req, Response res) {
         return null;}
     

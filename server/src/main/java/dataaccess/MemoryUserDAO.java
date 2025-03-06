@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.UserData;
+import requestsandresults.LoginRequest;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,45 +19,10 @@ public class MemoryUserDAO implements UserDAO {
         db.add(user);
     }
 
-//    @Override
-//    public String findUser(UserData user) throws DataAccessException {
-//        if(DB.contains(user)){
-//            return
-//        }
-//    }
-
-    //read
-//    public Boolean verifyUsername(String username) throws DataAccessException{
-//        boolean found = false;
-//        for(UserData data: DB){
-//            if(data.username().equals(username)){
-//                found = true;
-//                break;
-//            }
-//        }
-//        if(!found) {
-//            throw new DataAccessException("Username doesn't exist");
-//        }
-//        return found;
-//    }
-//
-//    public Boolean verifyEmail(String email) throws DataAccessException{
-//        boolean found = false;
-//        for(UserData data: DB){
-//            if(data.email().equals(email)){
-//                found = true;
-//            }
-//        }
-//        if(!found) {
-//            throw new DataAccessException("Email doesn't exist");
-//        }
-//        return found;
-//    }
-
-    public boolean verifyUser(String username, String password) throws DataAccessException{
+    public boolean verifyUser(LoginRequest request) throws DataAccessException{
         boolean found = false;
         for(UserData data: db){
-            if(data.username().equals(username) && data.password().equals(password)){
+            if(data.username().equals(request.username()) && data.password().equals(request.password())){
                 found = true;
                 break;
             }
