@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import model.GameData;
+import requestsandresults.JoinRequest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,8 +21,24 @@ public class MemoryGameDAO implements GameDAO{
         return tracker;
     }
 
+    public void joinGame(JoinRequest request) throws DataAccessException{
+        GameData oldData = getGame(request.gameID());
+        if(request.playerColor() == ChessGame.TeamColor.BLACK && oldData.blackUsername() == null){
+            updateGame(new GameData(request.gameID(), oldData.whiteUsername(), request.username(), oldData.gameName(), oldData.game()), request.gameID());
+        }else if (request.playerColor() == ChessGame.TeamColor.WHITE && oldData.whiteUsername() == null){
+            updateGame(new GameData(request.gameID(), request.username(), oldData.blackUsername(), oldData.gameName(), oldData.game()), request.gameID());
+        }else{
+            throw new DataAccessException("Error: already Taken");
+        }
+    }
+
     public GameData getGame(int gameID) throws DataAccessException{
-        return null;
+        for(GameData data : db){
+            if(data.gameID() == gameID){
+                return data;
+            }
+        }
+        throw new DataAccessException("Error: bad request");
     }
 
     @Override
@@ -29,11 +46,12 @@ public class MemoryGameDAO implements GameDAO{
         return new HashSet<>(db);
     }
 
-    public void updateGame() throws DataAccessException{
-
+    public void updateGame(GameData newGame, int gameID) throws DataAccessException{
+        deleteGame(gameID);
+        db.add(newGame);
     }
 
     public void deleteGame(int gameID) throws DataAccessException{
-
+        db.remove(getGame(gameID));
     }
 }

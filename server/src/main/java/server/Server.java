@@ -25,7 +25,7 @@ public class Server {
         Spark.delete("/session",this::logout);
 //        Spark.get("/game",this::listGames);
         Spark.post("/game",this::createGame);
-//        Spark.put("/game",this::joinGame);
+        Spark.put("/game",this::joinGame);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
 //        Spark.init();
@@ -95,7 +95,11 @@ public class Server {
     private Object createGame(Request req, Response res) {
         String authToken = req.headers("authorization");
         var user = new Gson().fromJson(req.body(), CreateRequest.class);
-        //TODO: check for bad request
+        if(user.gameName() == null){
+            res.status(400);
+            return new Gson().toJson(new ErrorResult("Error: bad request"));
+        }
+
 
         CreateRequest request = new CreateRequest(authToken, user.gameName());
         try{
@@ -107,7 +111,18 @@ public class Server {
         }
     }
     private Object joinGame(Request req, Response res) {
-        return null;}
+        String authToken = req.headers("authorization");//TODO add this to a class of it's own
+        var user = new Gson().fromJson(req.body(), JoinRequest.class);
+
+        try{
+            JoinRequest request = new JoinRequest(authToken, user.playerColor(),user.gameID(), userService.getUser(authToken).username());
+            userService.verifyAuth(authToken);
+            return new Gson().toJson(gameService.joinGame(request));
+        }catch(DataAccessException e){//TODO deal with different error
+            res.status(401);
+            return new Gson().toJson(new ErrorResult("Error: unauthorized"));//TODO also add this to a class of it's own
+        }
+    }
     
     // var pet = new Gson().fromJson(req.body(), Pet.class);
     //        pet = service.addPet(pet);

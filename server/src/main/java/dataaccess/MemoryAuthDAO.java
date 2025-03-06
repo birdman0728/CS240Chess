@@ -13,9 +13,18 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public AuthData findAuth(String username) throws DataAccessException {
+    public AuthData findAuthFromUser(String username) throws DataAccessException {
         for(AuthData data: db){
             if(data.username().equals(username)){
+                return data;
+            }
+        }
+        throw new DataAccessException("unauthorized");
+    }
+
+    public AuthData getAuthFromAuth(String authToken) throws DataAccessException{
+        for(AuthData data: db){
+            if(data.username().equals(authToken)){
                 return data;
             }
         }

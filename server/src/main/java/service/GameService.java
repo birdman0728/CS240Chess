@@ -3,8 +3,7 @@ package service;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryGameDAO;
 import model.GameData;
-import requestsandresults.CreateRequest;
-import requestsandresults.CreateResult;
+import requestsandresults.*;
 
 import java.util.Set;
 
@@ -16,8 +15,14 @@ public class GameService {
         return new CreateResult(gameDB.createGame(request.gameName()));
     }
 
-    public Set<GameData> listGames() {
-        return gameDB.getAllGames();
+    public JoinResult joinGame(JoinRequest request) throws DataAccessException{
+        gameDB.joinGame(request);
+        return new JoinResult();
+    }
+
+    public ListResult listGames() {
+//        return gameDB.getAllGames();
+    return null;
     }
 
     public void clear() {

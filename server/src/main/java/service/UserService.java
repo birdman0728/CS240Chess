@@ -50,6 +50,10 @@ public class UserService {
         return authDB.verifyAuth(authToken);
     }
 
+    public AuthData getUser(String authToken) throws DataAccessException {
+        return authDB.getAuthFromAuth(authToken);
+    }
+
     public void clear(){
         userDB = new MemoryUserDAO();
         authDB = new MemoryAuthDAO();
