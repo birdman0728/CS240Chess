@@ -21,8 +21,7 @@ public class GameService {
     }
 
     public ListResult listGames() {
-//        return gameDB.getAllGames();
-    return null;
+        return new ListResult(gameDB.getAllGames());
     }
 
     public void clear() {

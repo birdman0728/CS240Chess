@@ -84,6 +84,7 @@ public class Server {
 
     private Object listGames(Request req, Response res) {
         ListRequest request = new ListRequest(req.headers("authorization"));
+
         try{
             userService.verifyAuth(request.authToken());
             return new Gson().toJson(gameService.listGames());
@@ -134,30 +135,6 @@ public class Server {
             }
         }
     }
-    
-    // var pet = new Gson().fromJson(req.body(), Pet.class);
-    //        pet = service.addPet(pet);
-    //        webSocketHandler.makeNoise(pet.name(), pet.sound());
-    //        return new Gson().toJson(pet);
-
-
-
-
-
-//    private static void createRoutes() {
-//
-//        //register
-//        Spark.post("/user", ((request, response) -> {
-//
-//            //            response.status(200);
-////            response.type("Register a new user");
-////            response.body("username":"","password":"", "email":"")
-//        }));
-//
-//
-//    }
-
-//    private string
 
     public void stop() {
         Spark.stop();
