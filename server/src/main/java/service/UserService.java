@@ -51,7 +51,7 @@ public class UserService {
     }
 
     public AuthData getUser(String authToken) throws DataAccessException {
-        return authDB.getAuthFromAuth(authToken);
+        return authDB.getDataFromAuth(authToken);
     }
 
     public void clear(){

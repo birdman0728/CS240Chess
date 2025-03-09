@@ -2,7 +2,6 @@ package dataaccess;
 
 import model.AuthData;
 
-import javax.xml.crypto.Data;
 import java.util.HashSet;
 
 public class MemoryAuthDAO implements AuthDAO{
@@ -22,9 +21,9 @@ public class MemoryAuthDAO implements AuthDAO{
         throw new DataAccessException("unauthorized");
     }
 
-    public AuthData getAuthFromAuth(String authToken) throws DataAccessException{
+    public AuthData getDataFromAuth(String authToken) throws DataAccessException{
         for(AuthData data: db){
-            if(data.username().equals(authToken)){
+            if(data.authToken().equals(authToken)){
                 return data;
             }
         }

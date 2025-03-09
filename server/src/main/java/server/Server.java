@@ -23,7 +23,7 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/session",this::login);
         Spark.delete("/session",this::logout);
-//        Spark.get("/game",this::listGames);
+        Spark.get("/game",this::listGames);
         Spark.post("/game",this::createGame);
         Spark.put("/game",this::joinGame);
 
@@ -113,14 +113,25 @@ public class Server {
     private Object joinGame(Request req, Response res) {
         String authToken = req.headers("authorization");//TODO add this to a class of it's own
         var user = new Gson().fromJson(req.body(), JoinRequest.class);
+        //TODO bad Request handling
+        if(user.playerColor() == null || user.gameID() == 0 /*|| user.username() == null*/){
+            res.status(400);
+            return new Gson().toJson(new ErrorResult("Error: bad request"));
+        }
 
         try{
-            JoinRequest request = new JoinRequest(authToken, user.playerColor(),user.gameID(), userService.getUser(authToken).username());
+            JoinRequest request = new JoinRequest(authToken, user.playerColor(), user.gameID(), userService.getUser(authToken).username());
             userService.verifyAuth(authToken);
+//            res.status(200);
             return new Gson().toJson(gameService.joinGame(request));
         }catch(DataAccessException e){//TODO deal with different error
-            res.status(401);
-            return new Gson().toJson(new ErrorResult("Error: unauthorized"));//TODO also add this to a class of it's own
+            if(e.getMessage().equals("Error: already Taken")){
+                res.status(403);
+                return new Gson().toJson(new ErrorResult(e.getMessage()));
+            }else {
+                res.status(401);
+                return new Gson().toJson(new ErrorResult("Error: unauthorized"));//TODO also add this to a class of it's own
+            }
         }
     }
     
