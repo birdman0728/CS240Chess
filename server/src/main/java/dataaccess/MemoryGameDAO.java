@@ -23,10 +23,11 @@ public class MemoryGameDAO implements GameDAO{
 
     public void joinGame(JoinRequest request) throws DataAccessException{
         GameData oldData = getGame(request.gameID());
+        String newUsername = request.username();
         if(request.playerColor() == ChessGame.TeamColor.BLACK && oldData.blackUsername() == null){
-            updateGame(new GameData(request.gameID(), oldData.whiteUsername(), request.username(), oldData.gameName(), oldData.game()), request.gameID());
+            updateGame(new GameData(request.gameID(), oldData.whiteUsername(), newUsername, oldData.gameName(), oldData.game()), request.gameID());
         }else if (request.playerColor() == ChessGame.TeamColor.WHITE && oldData.whiteUsername() == null){
-            updateGame(new GameData(request.gameID(), request.username(), oldData.blackUsername(), oldData.gameName(), oldData.game()), request.gameID());
+            updateGame(new GameData(request.gameID(), newUsername, oldData.blackUsername(), oldData.gameName(), oldData.game()), request.gameID());
         }else{
             throw new DataAccessException("Error: already Taken");
         }

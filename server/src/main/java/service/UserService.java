@@ -18,7 +18,6 @@ public class UserService {
     }
 
     public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException{
-        //TODO add error checking
         String newToken = generateToken();
         userDB.createUser(new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email()));
         authDB.createAuth(new AuthData(newToken, registerRequest.username()));

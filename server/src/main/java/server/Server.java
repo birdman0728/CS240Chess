@@ -67,34 +67,34 @@ public class Server {
             return new Gson().toJson(userService.login(request));
         }catch(DataAccessException e){
             res.status(401);
-            return new Gson().toJson(new ErrorResult("Error: unauthorized"));
+            return new Gson().toJson(unauthorizedError());
         }
     }
     private Object logout(Request req, Response res) {
-        String authToken = req.headers("authorization");
+        String authToken = getAuth(req);
 
         LogoutRequest request = new LogoutRequest(authToken);
         try{
             return new Gson().toJson(userService.logout(request));
         }catch(DataAccessException e){
             res.status(401);
-            return new Gson().toJson(new ErrorResult("Error: unauthorized"));
+            return new Gson().toJson(unauthorizedError());
         }
     }
 
     private Object listGames(Request req, Response res) {
-        ListRequest request = new ListRequest(req.headers("authorization"));
+        ListRequest request = new ListRequest(getAuth(req));
 
         try{
             userService.verifyAuth(request.authToken());
             return new Gson().toJson(gameService.listGames());
         }catch(DataAccessException e){
             res.status(401);
-            return new Gson().toJson(new ErrorResult("Error: unauthorized"));
+            return new Gson().toJson(unauthorizedError());
         }
     }
     private Object createGame(Request req, Response res) {
-        String authToken = req.headers("authorization");
+        String authToken = getAuth(req);
         var user = new Gson().fromJson(req.body(), CreateRequest.class);
         if(user.gameName() == null){
             res.status(400);
@@ -108,14 +108,15 @@ public class Server {
             return new Gson().toJson(gameService.createGame(request));
         }catch(DataAccessException e){
             res.status(401);
-            return new Gson().toJson(new ErrorResult("Error: unauthorized"));
+            return new Gson().toJson(unauthorizedError());
         }
     }
     private Object joinGame(Request req, Response res) {
-        String authToken = req.headers("authorization");//TODO add this to a class of it's own
+        String authToken = getAuth(req);
         var user = new Gson().fromJson(req.body(), JoinRequest.class);
-        //TODO bad Request handling
-        if(user.playerColor() == null || user.gameID() == 0 /*|| user.username() == null*/){
+
+
+        if(user.playerColor() == null || user.gameID() == 0){
             res.status(400);
             return new Gson().toJson(new ErrorResult("Error: bad request"));
         }
@@ -125,15 +126,23 @@ public class Server {
             userService.verifyAuth(authToken);
 //            res.status(200);
             return new Gson().toJson(gameService.joinGame(request));
-        }catch(DataAccessException e){//TODO deal with different error
+        }catch(DataAccessException e){
             if(e.getMessage().equals("Error: already Taken")){
                 res.status(403);
                 return new Gson().toJson(new ErrorResult(e.getMessage()));
             }else {
                 res.status(401);
-                return new Gson().toJson(new ErrorResult("Error: unauthorized"));//TODO also add this to a class of it's own
+                return new Gson().toJson(unauthorizedError());
             }
         }
+    }
+
+    private String getAuth(Request req){
+        return req.headers("authorization");
+    }
+
+    private ErrorResult unauthorizedError(){
+        return new ErrorResult("Error: unauthorized");
     }
 
     public void stop() {
