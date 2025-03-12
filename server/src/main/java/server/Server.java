@@ -116,6 +116,7 @@ public class Server {
         var user = new Gson().fromJson(req.body(), JoinRequest.class);
 
 
+
         if(user.playerColor() == null || user.gameID() == 0){
             res.status(400);
             return new Gson().toJson(new ErrorResult("Error: bad request"));

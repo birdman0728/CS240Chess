@@ -55,4 +55,9 @@ public class MemoryGameDAO implements GameDAO{
     public void deleteGame(int gameID) throws DataAccessException{
         db.remove(getGame(gameID));
     }
+
+    public boolean isEmpty (){
+        return db.isEmpty();
+    }
+
 }

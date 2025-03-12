@@ -32,6 +32,10 @@ public class MemoryUserDAO implements UserDAO {
         return found;
     }
 
+    public boolean isEmpty (){
+        return db.isEmpty();
+    }
+
 
     @Override
     public boolean equals(Object o) {
