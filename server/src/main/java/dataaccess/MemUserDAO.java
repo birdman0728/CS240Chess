@@ -6,7 +6,7 @@ import requestsandresults.LoginRequest;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class MemoryUserDAO implements UserDAO {
+public class MemUserDAO implements UserDAO {
     ////create
     HashSet<UserData> db = new HashSet<UserData>();
     public void createUser(UserData user) throws DataAccessException{
@@ -45,7 +45,7 @@ public class MemoryUserDAO implements UserDAO {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MemoryUserDAO that = (MemoryUserDAO) o;
+        MemUserDAO that = (MemUserDAO) o;
         return Objects.equals(db, that.db);
     }
 

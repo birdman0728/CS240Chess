@@ -7,7 +7,7 @@ import requestsandresults.JoinRequest;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MemoryGameDAO implements GameDAO{
+public class MemGameDAO implements GameDAO{
     HashSet<GameData> db = new HashSet<GameData>();
     public int createGame(String gameName) {
         int id = newGameID();

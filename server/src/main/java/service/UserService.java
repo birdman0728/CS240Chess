@@ -1,8 +1,6 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import requestsandresults.*;
@@ -10,8 +8,10 @@ import requestsandresults.*;
 import java.util.UUID;
 
 public class UserService {
-    MemoryUserDAO userDB = new MemoryUserDAO();
-    MemoryAuthDAO authDB = new MemoryAuthDAO();
+//    UserDAO userDB = new MemUserDAO();
+    UserDAO userDB = new SQLUserDAO();
+//        AuthDAO authDB = new MemAuthDAO();
+    AuthDAO authDB = new SQLAuthDAO();
 
     private String generateToken(){
         return UUID.randomUUID().toString();
@@ -53,8 +53,8 @@ public class UserService {
         return authDB.getDataFromAuth(authToken);
     }
 
-    public void clear(){
-        userDB = new MemoryUserDAO();
-        authDB = new MemoryAuthDAO();
+    public void clear(){//TODO revamp clear class
+        userDB = new MemUserDAO();
+        authDB = new MemAuthDAO();
     }
 }
