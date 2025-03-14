@@ -47,7 +47,6 @@ public class Server {
         var user = new Gson().fromJson(req.body(), RegisterRequest.class);
         if(user.username() == null || user.email() == null || user.password() == null){
             res.status(400);
-//            res.body("Error: bad request");
             return new Gson().toJson(new ErrorResult("Error: bad request"));
         }
 
