@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.GameData;
+import requestsandresults.JoinRequest;
 
 import java.sql.SQLException;
 import java.util.Set;
@@ -12,11 +13,16 @@ public class SQLGameDAO implements GameDAO{
     }
 
     @Override
+    public void joinGame(JoinRequest request) throws DataAccessException {
+
+    }
+
+    @Override
     public GameData getGame(int gameID) throws DataAccessException {
         return null;
     }
 
-    @Override
+
     public Set<GameData> getAllGames() {
         return null;
     }
@@ -29,5 +35,10 @@ public class SQLGameDAO implements GameDAO{
     @Override
     public void deleteGame(int gameID) throws DataAccessException {
 
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 }

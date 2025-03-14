@@ -26,4 +26,9 @@ public class SQLAuthDAO implements AuthDAO{
 
     }
 
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
 }

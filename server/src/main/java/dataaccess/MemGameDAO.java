@@ -42,7 +42,6 @@ public class MemGameDAO implements GameDAO{
         throw new DataAccessException("Error: bad request");
     }
 
-    @Override
     public Set<GameData> getAllGames() {
         return new HashSet<>(db);
     }

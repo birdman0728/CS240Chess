@@ -10,4 +10,6 @@ public interface UserDAO {
     public void createUser(UserData user) throws DataAccessException;
 
     public boolean verifyUser(LoginRequest request) throws DataAccessException;
+
+    boolean isEmpty();
 }

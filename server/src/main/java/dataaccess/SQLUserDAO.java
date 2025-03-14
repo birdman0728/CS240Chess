@@ -21,6 +21,11 @@ public class SQLUserDAO implements UserDAO {
         return false;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
 
     private final String[] createStatements = { //TODO create proper statement
             """
