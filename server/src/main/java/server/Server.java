@@ -9,8 +9,17 @@ import service.UserService;
 import spark.*;
 
 public class Server {
-    private final UserService userService = new UserService();
-    private final GameService gameService = new GameService();
+    private UserService userService = null;
+    private GameService gameService = null;
+
+    public Server() {
+        try{
+            userService = new UserService();
+            gameService = new GameService();
+        }catch(DataAccessException e){
+            throw new RuntimeException();
+        }
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);

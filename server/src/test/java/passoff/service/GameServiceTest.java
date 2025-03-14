@@ -21,6 +21,9 @@ class GameServiceTest {
     UserData newUser = new UserData("Test", "password", "this@gmail.com");
     GameData newGame = new GameData(1, "WhiteTest", "BlackTest", "Test", new ChessGame());
 
+    GameServiceTest() throws DataAccessException {
+    }
+
     @BeforeEach
     public void setup() throws DataAccessException {
         userService.clear();

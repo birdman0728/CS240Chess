@@ -23,6 +23,9 @@ public class UserServiceTest {
 
     AuthData newAuth = new AuthData( existingAuth, newUser.username());
 
+    public UserServiceTest() throws DataAccessException {
+    }
+
     @BeforeEach
     public void setup() throws DataAccessException {
         userService.clear();

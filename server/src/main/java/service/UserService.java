@@ -8,10 +8,14 @@ import requestsandresults.*;
 import java.util.UUID;
 
 public class UserService {
-//    UserDAO userDB = new MemUserDAO();
-    UserDAO userDB = new SQLUserDAO();
-//        AuthDAO authDB = new MemAuthDAO();
-    AuthDAO authDB = new SQLAuthDAO();
+
+    UserDAO userDB = new MemUserDAO();
+//    UserDAO userDB = new SQLUserDAO();
+        AuthDAO authDB = new MemAuthDAO();
+//    AuthDAO authDB = new SQLAuthDAO();
+
+    public UserService() throws DataAccessException {
+    }
 
     private String generateToken(){
         return UUID.randomUUID().toString();
