@@ -7,8 +7,9 @@ import java.sql.SQLException;
 public class SQLAuthDAO implements AuthDAO{
 
     @Override
-    public void createAuth(AuthData authData) {
-
+    public void createAuth(AuthData authData) throws DataAccessException {
+        var statement = "INSERT INTO userdata (authToken, username) VALUES (?, ?)";
+        DatabaseManager.executeUpdate(statement, authData.authToken(), authData.username());
     }
 
     @Override

@@ -4,6 +4,7 @@ import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
 import dataaccess.SQLUserDAO;
 import dataaccess.UserDAO;
+import dataaccess.DatabaseManager;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.*;
@@ -20,14 +21,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class SQLDatabaseTests {
     UserDAO userDAO = new SQLUserDAO();
     UserData newUser = new UserData("Test", "password", "this@gmail.com");
-
     String existingAuth;
+    AuthData newAuth = new AuthData( existingAuth, newUser.username());
+    UserService userService = new UserService();
 
     public SQLDatabaseTests() throws DataAccessException {
     }
 
     @BeforeEach
-    public void setup() throws DataAccessException {
+    public void setup() throws DataAccessException { //TODO make sure it creates and deletes a test user
+//        RegisterResult regResult = userService.register(new RegisterRequest(newUser.username(), newUser.password(), newUser.email()));
+//        existingAuth = regResult.authToken();
 
 
 //        """
@@ -42,6 +46,7 @@ public class SQLDatabaseTests {
 
     @AfterEach
     public void post(){
+        var statement = "DELETE FROM userdata username = " + newUser.username();
 
     }
 
@@ -56,7 +61,7 @@ public class SQLDatabaseTests {
     public void dupeRegister(){
         assertThrows(DataAccessException.class, () -> {
             userDAO.createUser(newUser);
-        });
+        },"Duplicate User not being caught");
     }
 
     @Test
@@ -64,5 +69,13 @@ public class SQLDatabaseTests {
     public void login() throws DataAccessException {
         Assertions.assertTrue(userDAO.verifyUser(new LoginRequest(newUser.username(), newUser.password())),
                 "User not created");
+    }
+
+    @Test
+    @DisplayName("Wrong username")
+    public void badLogin() throws DataAccessException {
+        assertThrows(DataAccessException.class, () ->{
+            userDAO.verifyUser(new LoginRequest("Bob", newUser.password()));
+        },"Not catching wrong username");
     }
 }

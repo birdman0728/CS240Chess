@@ -15,16 +15,21 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public void createUser(UserData user) throws DataAccessException {
         var statement = "INSERT INTO userdata (username, password, email) VALUES (?, ?, ?)";
-        DatabaseManager.executeUpdate(statement, user.username(), user.password(), user.email());//TODO deal with error
+        DatabaseManager.executeUpdate(statement, user.username(), user.password(), user.email());
     }
 
     @Override
     public boolean verifyUser(LoginRequest request) throws DataAccessException {
-        var statement = "SELECT username FROM userdata WHERE username = 'bob' AND password = ?";
+        var statement = "SELECT username FROM userdata WHERE username = ? AND password = ?";
         try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
             ps.setString(1, request.username());
             ps.setString(2, request.password());
-            return true;
+            var rs = ps.executeQuery();
+
+            if(rs.next()){
+                return true;
+            }
+            throw new SQLException();
         } catch (SQLException e) {
             throw new DataAccessException("User does not exist");
         }
