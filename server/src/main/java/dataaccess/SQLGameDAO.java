@@ -1,15 +1,19 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 import requestsandresults.JoinRequest;
 
-import java.sql.SQLException;
 import java.util.Set;
 
 public class SQLGameDAO implements GameDAO{
     @Override
-    public int createGame(String gameName) { //TODO when saving in SQL, JSON IT TO A STRING
-        return 0;
+    public int createGame(String gameName) throws DataAccessException { //TODO when saving in SQL, JSON IT TO A STRING
+        ChessGame newGame = new ChessGame();
+        String serializedGame = new Gson().toJson(newGame);
+        var statement = "INSERT INTO gamedata (whiteUsername, blackUsername, gameName, game) values (?, ?, ?, ?)";
+        return DatabaseManager.executeUpdate(statement, null, null, gameName, serializedGame);
     }
 
     @Override
@@ -34,6 +38,11 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public void deleteGame(int gameID) throws DataAccessException {
+
+    }
+
+    @Override
+    public void clear(){
 
     }
 

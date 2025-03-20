@@ -55,6 +55,11 @@ public class MemGameDAO implements GameDAO{
         db.remove(getGame(gameID));
     }
 
+    @Override
+    public void clear() {
+
+    }
+
     public boolean isEmpty (){
         return db.isEmpty();
     }

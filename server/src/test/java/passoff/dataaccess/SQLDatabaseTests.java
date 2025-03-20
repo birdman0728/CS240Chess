@@ -5,6 +5,7 @@ import dataaccess.DatabaseManager;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.*;
+import requestsandresults.CreateResult;
 import requestsandresults.LoginRequest;
 import requestsandresults.RegisterRequest;
 import requestsandresults.RegisterResult;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SQLDatabaseTests {
     UserDAO userDAO = new SQLUserDAO();
     AuthDAO authDAO = new SQLAuthDAO();
+    GameDAO gameDAO = new SQLGameDAO();
     UserData newUser = new UserData("Test", "password", "this@gmail.com");
     String existingAuth;
     AuthData newAuth = new AuthData( existingAuth, newUser.username());
@@ -31,6 +33,7 @@ public class SQLDatabaseTests {
     public void setup() throws DataAccessException {
         RegisterResult regResult = userService.register(new RegisterRequest(newUser.username(), newUser.password(), newUser.email()));
         existingAuth = regResult.authToken();
+        int gameID = gameDAO.createGame("Test");
     }
 
     @AfterEach
@@ -90,6 +93,12 @@ public class SQLDatabaseTests {
         assertThrows(DataAccessException.class, () -> {
             authDAO.verifyAuth(existingAuth);
         },"Auth not deleted");
+    }
+
+    @Test
+    @DisplayName("Creating Game")
+    public void createGame() {
+
     }
 
     @Test

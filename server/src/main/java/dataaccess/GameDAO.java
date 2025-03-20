@@ -8,17 +8,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface GameDAO {
-    public int createGame(String gameName);
+    int createGame(String gameName) throws DataAccessException;
 
-    public void joinGame(JoinRequest request) throws DataAccessException;
+    void joinGame(JoinRequest request) throws DataAccessException;
 
-    public GameData getGame(int gameID) throws DataAccessException;
+    GameData getGame(int gameID) throws DataAccessException;
 
-    public void updateGame(GameData newGame, int gameID) throws DataAccessException;
+    void updateGame(GameData newGame, int gameID) throws DataAccessException;
 
-    public void deleteGame(int gameID) throws DataAccessException;
+    void deleteGame(int gameID) throws DataAccessException;
 
-    public boolean isEmpty ();
+    void clear();
+
+    boolean isEmpty ();
 
     Set<GameData> getAllGames();
 }
