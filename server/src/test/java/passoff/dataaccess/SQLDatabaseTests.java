@@ -1,9 +1,6 @@
 package passoff.dataaccess;
 
-import dataaccess.DataAccessException;
-import dataaccess.DatabaseManager;
-import dataaccess.SQLUserDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 import dataaccess.DatabaseManager;
 import model.AuthData;
 import model.UserData;
@@ -17,11 +14,11 @@ import javax.xml.crypto.Data;
 import java.sql.SQLException;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLDatabaseTests {
     UserDAO userDAO = new SQLUserDAO();
+    AuthDAO authDAO = new SQLAuthDAO();
     UserData newUser = new UserData("Test", "password", "this@gmail.com");
     String existingAuth;
     AuthData newAuth = new AuthData( existingAuth, newUser.username());
@@ -31,15 +28,15 @@ public class SQLDatabaseTests {
     }
 
     @BeforeEach
-    public void setup() throws DataAccessException { //TODO make sure it creates and deletes a test user
+    public void setup() throws DataAccessException {
         RegisterResult regResult = userService.register(new RegisterRequest(newUser.username(), newUser.password(), newUser.email()));
         existingAuth = regResult.authToken();
-
     }
 
     @AfterEach
     public void post() throws DataAccessException {
         userDAO.clear();
+        authDAO.clear();
     }
 
     @Test
@@ -72,7 +69,24 @@ public class SQLDatabaseTests {
     }
 
     @Test
+    @DisplayName("Normal Auth Create")
+    public void authCreate() throws DataAccessException {
+        assertEquals(newAuth.username(), authDAO.getDataFromAuth(existingAuth).username(),
+                "Auth not inserted properly");
+    }
+
+    @Test
+    @DisplayName("Duplicate Auth Create")
+    public void dupeAuth() throws DataAccessException {
+        assertThrows(DataAccessException.class, () ->{
+            authDAO.createAuth(new AuthData(existingAuth, newUser.username()));
+        }, "Not catching duplicate entry");
+
+    }
+
+    @Test
     public void clear() throws DataAccessException {//TODO create actual tests
         userDAO.clear();
+        authDAO.clear();
     }
 }

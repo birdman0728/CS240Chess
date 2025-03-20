@@ -14,7 +14,18 @@ public class SQLAuthDAO implements AuthDAO{
 
     @Override
     public AuthData getDataFromAuth(String authToken) throws DataAccessException {
-        return null;
+        var statement = "SELECT username FROM authdata WHERE authToken = ? ";
+        try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
+            ps.setString(1, authToken);
+            var rs = ps.executeQuery();
+
+            while(rs.next()){
+                return new AuthData(authToken, rs.getString("username"));
+            }
+            throw new SQLException();
+        } catch (SQLException e) {
+            throw new DataAccessException("User does not exist");
+        }
     }
 
     @Override
@@ -30,6 +41,17 @@ public class SQLAuthDAO implements AuthDAO{
     @Override
     public boolean isEmpty() {
         return false;
+    }
+
+    @Override
+    public void clear() throws DataAccessException {
+        var statement = "TRUNCATE TABLE authdata;";
+        try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Did not clear");
+        }
     }
 
 }

@@ -34,6 +34,11 @@ public class MemAuthDAO implements AuthDAO{
         db.removeIf(data -> data.authToken().equals(authToken));
     }
 
+    @Override
+    public void clear() {
+
+    }
+
     public boolean isEmpty (){
         return db.isEmpty();
     }

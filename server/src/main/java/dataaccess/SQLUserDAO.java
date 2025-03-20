@@ -51,7 +51,7 @@ public class SQLUserDAO implements UserDAO {
     }
 
 
-    private final String[] createStatements = { //TODO create proper statement
+    private final String[] createStatements = { //TODO set auth and game foreign keys correctly
             """
             CREATE TABLE IF NOT EXISTS  UserData (
                 `username` varchar(256) NOT NULL,
