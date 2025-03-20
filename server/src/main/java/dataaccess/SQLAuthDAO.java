@@ -3,6 +3,7 @@ package dataaccess;
 import model.AuthData;
 
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class SQLAuthDAO implements AuthDAO{
 
@@ -29,13 +30,17 @@ public class SQLAuthDAO implements AuthDAO{
     }
 
     @Override
-    public boolean verifyAuth(String authToken) throws DataAccessException {
-        return false;
+    public boolean verifyAuth(String authToken) throws DataAccessException {//TODO turn verify's into gets(?)
+        if(Objects.equals(getDataFromAuth(authToken).authToken(), authToken)){
+            return true;
+        }
+        throw new DataAccessException("Auth Does not exist");
     }
 
     @Override
-    public void deleteAuth(String authToken) {
-
+    public void deleteAuth(String authToken) throws DataAccessException {
+        var statement = "DELETE FROM authdata WHERE authToken = ?";
+        DatabaseManager.executeUpdate(statement, authToken);
     }
 
     @Override

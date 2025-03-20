@@ -81,7 +81,15 @@ public class SQLDatabaseTests {
         assertThrows(DataAccessException.class, () ->{
             authDAO.createAuth(new AuthData(existingAuth, newUser.username()));
         }, "Not catching duplicate entry");
+    }
 
+    @Test
+    @DisplayName("Delete Auth Token")
+    public void deleteAuth() throws DataAccessException {
+        authDAO.deleteAuth(existingAuth);
+        assertThrows(DataAccessException.class, () -> {
+            authDAO.verifyAuth(existingAuth);
+        },"Auth not deleted");
     }
 
     @Test
