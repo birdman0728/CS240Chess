@@ -117,10 +117,20 @@ public class SQLDatabaseTests {
     @Test
     @DisplayName("get bad game")
     public void getBadGame() throws DataAccessException {
-        GameData newGame = new GameData(gameID, null, null, "Bad name", new ChessGame());
         assertThrows(DataAccessException.class, ()->{
-            gameDAO.getGame(256);
+            gameDAO.getGame(-1);
         },("Does not throw error"));
+    }
+
+    @Test
+    @DisplayName("List all games")
+    public void listAllGames() throws DataAccessException{
+        gameDAO.createGame("2");
+        gameDAO.createGame("3");
+        gameDAO.createGame("4");
+        gameDAO.createGame("5");
+        assertEquals(5, gameDAO.getAllGames().size(),
+                "Does not list all the games");
     }
 
     @Test

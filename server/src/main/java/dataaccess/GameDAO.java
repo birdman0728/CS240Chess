@@ -22,5 +22,5 @@ public interface GameDAO {
 
     boolean isEmpty ();
 
-    Set<GameData> getAllGames();
+    Set<GameData> getAllGames() throws DataAccessException;
 }

@@ -7,6 +7,7 @@ import model.GameData;
 import requestsandresults.JoinRequest;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Set;
 
 public class SQLGameDAO implements GameDAO{
@@ -45,9 +46,28 @@ public class SQLGameDAO implements GameDAO{
     }
 
 
-    public Set<GameData> getAllGames() {
-        return null;
+    public Set<GameData> getAllGames() throws DataAccessException {
+        Set<GameData> allGames = new HashSet<>();
+        var statement = "SELECT * FROM gamedata";
+        try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
+            var rs = ps.executeQuery();
+
+            while(rs.next()){
+                int gameID = rs.getInt("gameID");
+                String wtusername = rs.getString("whiteUsername");
+                String bkusername = rs.getString("blackUsername");
+                String gamename = rs.getString("gameName");
+                ChessGame game = new Gson().fromJson(rs.getString("game"), ChessGame.class);
+                GameData newGame = new GameData(gameID, wtusername, bkusername, gamename, game);
+                allGames.add(newGame);
+            }
+            return allGames;
+        } catch (SQLException e) {
+            throw new DataAccessException("Game does not exist");
+        }
     }
+
+    //TODO list 0 games
 
     @Override
     public void updateGame(GameData newGame, int gameID) throws DataAccessException {

@@ -21,7 +21,7 @@ public class GameService {
         return new JoinResult();
     }
 
-    public ListResult listGames() {
+    public ListResult listGames() throws DataAccessException {
         return new ListResult(gameDB.getAllGames());
     }
 
