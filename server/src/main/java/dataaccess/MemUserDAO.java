@@ -32,6 +32,11 @@ public class MemUserDAO implements UserDAO {
         return found;
     }
 
+    @Override
+    public void clear() {
+
+    }
+
     public boolean isEmpty (){
         return db.isEmpty();
     }

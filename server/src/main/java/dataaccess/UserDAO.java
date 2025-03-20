@@ -11,5 +11,7 @@ public interface UserDAO {
 
     public boolean verifyUser(LoginRequest request) throws DataAccessException;
 
+    void clear() throws DataAccessException;
+
     boolean isEmpty();
 }

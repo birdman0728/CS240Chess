@@ -1,6 +1,5 @@
 package dataaccess;
 
-import com.google.gson.Gson;
 import model.UserData;
 import requestsandresults.LoginRequest;
 
@@ -32,6 +31,17 @@ public class SQLUserDAO implements UserDAO {
             throw new SQLException();
         } catch (SQLException e) {
             throw new DataAccessException("User does not exist");
+        }
+    }
+
+    @Override
+    public void clear() throws DataAccessException {
+        var statement = "TRUNCATE TABLE userdata;";
+        try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Did not clear");
         }
     }
 

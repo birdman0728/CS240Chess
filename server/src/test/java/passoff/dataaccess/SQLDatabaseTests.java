@@ -16,7 +16,9 @@ import service.UserService;
 import javax.xml.crypto.Data;
 import java.sql.SQLException;
 
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SQLDatabaseTests {
     UserDAO userDAO = new SQLUserDAO();
@@ -30,30 +32,20 @@ public class SQLDatabaseTests {
 
     @BeforeEach
     public void setup() throws DataAccessException { //TODO make sure it creates and deletes a test user
-//        RegisterResult regResult = userService.register(new RegisterRequest(newUser.username(), newUser.password(), newUser.email()));
-//        existingAuth = regResult.authToken();
+        RegisterResult regResult = userService.register(new RegisterRequest(newUser.username(), newUser.password(), newUser.email()));
+        existingAuth = regResult.authToken();
 
-
-//        """
-//            CREATE TABLE IF NOT EXISTS  UserData (
-//                `username` varchar(256) NOT NULL,
-//                `password` varchar(256) NOT NULL,
-//                `email` varchar(256) NOT NULL,
-//                PRIMARY KEY (`username`)
-//                )
-//            """,
     }
 
     @AfterEach
-    public void post(){
-        var statement = "DELETE FROM userdata username = " + newUser.username();
-
+    public void post() throws DataAccessException {
+        userDAO.clear();
     }
 
     @Test
     @DisplayName("Normal creation")
-    public void register(){
-
+    public void register() throws DataAccessException {
+        assertTrue(userDAO.verifyUser(new LoginRequest(newUser.username(), newUser.password())));
     }
 
     @Test
@@ -77,5 +69,10 @@ public class SQLDatabaseTests {
         assertThrows(DataAccessException.class, () ->{
             userDAO.verifyUser(new LoginRequest("Bob", newUser.password()));
         },"Not catching wrong username");
+    }
+
+    @Test
+    public void clear() throws DataAccessException {//TODO create actual tests
+        userDAO.clear();
     }
 }
