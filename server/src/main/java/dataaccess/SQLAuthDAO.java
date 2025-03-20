@@ -25,7 +25,7 @@ public class SQLAuthDAO implements AuthDAO{
             }
             throw new SQLException();
         } catch (SQLException e) {
-            throw new DataAccessException("User does not exist");
+            throw new DataAccessException("Auth does not exist");
         }
     }
 

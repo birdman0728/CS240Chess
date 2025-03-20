@@ -1,8 +1,10 @@
 package passoff.dataaccess;
 
+import chess.ChessGame;
 import dataaccess.*;
 import dataaccess.DatabaseManager;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import requestsandresults.CreateResult;
@@ -25,6 +27,8 @@ public class SQLDatabaseTests {
     String existingAuth;
     AuthData newAuth = new AuthData( existingAuth, newUser.username());
     UserService userService = new UserService();
+    String gameName = "TestGame";
+    int gameID;
 
     public SQLDatabaseTests() throws DataAccessException {
     }
@@ -33,13 +37,14 @@ public class SQLDatabaseTests {
     public void setup() throws DataAccessException {
         RegisterResult regResult = userService.register(new RegisterRequest(newUser.username(), newUser.password(), newUser.email()));
         existingAuth = regResult.authToken();
-        int gameID = gameDAO.createGame("Test");
+        gameID = gameDAO.createGame(gameName);
     }
 
     @AfterEach
     public void post() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
+        gameDAO.clear();
     }
 
     @Test
@@ -97,13 +102,31 @@ public class SQLDatabaseTests {
 
     @Test
     @DisplayName("Creating Game")
-    public void createGame() {
+    public void createGame() throws DataAccessException {
+        assertEquals(gameName, gameDAO.getGame(gameID).gameName(),
+                "Failed to create game");
+    }
 
+    @Test
+    @DisplayName("getting game")
+    public void getGame() throws DataAccessException {
+        GameData newGame = new GameData(gameID, null, null, gameName, new ChessGame());
+        assertEquals(newGame, gameDAO.getGame(gameID));
+    }
+
+    @Test
+    @DisplayName("get bad game")
+    public void getBadGame() throws DataAccessException {
+        GameData newGame = new GameData(gameID, null, null, "Bad name", new ChessGame());
+        assertThrows(DataAccessException.class, ()->{
+            gameDAO.getGame(256);
+        },("Does not throw error"));
     }
 
     @Test
     public void clear() throws DataAccessException {//TODO create actual tests
         userDAO.clear();
         authDAO.clear();
+        gameDAO.clear();
     }
 }
