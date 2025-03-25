@@ -13,5 +13,5 @@ public interface UserDAO {
 
     void clear() throws DataAccessException;
 
-    boolean isEmpty();
+    boolean isEmpty() throws DataAccessException;
 }

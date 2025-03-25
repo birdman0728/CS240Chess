@@ -20,7 +20,7 @@ public interface GameDAO {
 
     void clear() throws DataAccessException;
 
-    boolean isEmpty ();
+    boolean isEmpty () throws DataAccessException;
 
     Set<GameData> getAllGames() throws DataAccessException;
 }

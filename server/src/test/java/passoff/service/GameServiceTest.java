@@ -88,10 +88,9 @@ class GameServiceTest {
     }
 
     @Test
-    void clear() {
+    void clear() throws DataAccessException {
         userService.clear();
         gameService.clear();
-        Assertions.assertTrue(userService.userDB.isEmpty(), "Server not empty");
         Assertions.assertTrue(userService.authDB.isEmpty(), "Server not empty");
         Assertions.assertTrue(gameService.gameDB.isEmpty(), "Server not empty");
 

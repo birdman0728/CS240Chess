@@ -9,6 +9,7 @@ import dataaccess.DatabaseManager;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.*;
 import requestsandresults.*;
 import service.UserService;
@@ -177,9 +178,28 @@ public class SQLDatabaseTests {
     }
 
     @Test
+    @DisplayName("Empty After Clear")
+    void checkEmpty() throws DataAccessException {
+        clear();
+        Assertions.assertTrue(authDAO.isEmpty(), "Server not empty");
+        Assertions.assertTrue(userDAO.isEmpty(), "Server not empty");
+        Assertions.assertTrue(gameDAO.isEmpty(), "Server not empty");
+    }
+    @Test
+    @DisplayName("Check Non-Empty Servers")
+    void notEmptyServers() throws DataAccessException{
+        Assertions.assertFalse(authDAO.isEmpty(), "Server not empty");
+        Assertions.assertFalse(userDAO.isEmpty(), "Server not empty");
+        Assertions.assertFalse(gameDAO.isEmpty(), "Server not empty");
+    }
+
+    @Test
     public void clear() throws DataAccessException {//TODO create actual tests
         userDAO.clear();
         authDAO.clear();
         gameDAO.clear();
+        assertTrue(userDAO.isEmpty(),"user table not cleared");
+        assertTrue(authDAO.isEmpty(),"auth table not cleared");
+        assertTrue(gameDAO.isEmpty(),"Game table not cleared");
     }
 }

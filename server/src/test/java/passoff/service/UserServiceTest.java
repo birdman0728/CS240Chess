@@ -91,7 +91,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void clear() {
+    void clear() throws DataAccessException {
         userService.clear();
         Assertions.assertTrue(userService.userDB.isEmpty(), "Server not empty");
         Assertions.assertTrue(userService.authDB.isEmpty(), "Server not empty");

@@ -106,7 +106,19 @@ public class SQLGameDAO implements GameDAO{
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
+    public boolean isEmpty() throws DataAccessException {
+        int num;
+        var statement = "SELECT COUNT(*) FROM gamedata";
+        try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
+            var rs = ps.executeQuery();
+
+            if(rs.next()){
+                num = rs.getInt(1);
+                return num == 0;
+            }
+            throw new SQLException();
+        } catch (SQLException e) {
+            throw new DataAccessException("error while checking");
+        }
     }
 }

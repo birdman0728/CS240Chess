@@ -44,8 +44,20 @@ public class SQLAuthDAO implements AuthDAO{
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
+    public boolean isEmpty() throws DataAccessException {
+        int num;
+        var statement = "SELECT COUNT(*) FROM authdata";
+        try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
+            var rs = ps.executeQuery();
+
+            if(rs.next()){
+                num = rs.getInt(1);
+                return num == 0;
+            }
+            throw new SQLException();
+        } catch (SQLException e) {
+            throw new DataAccessException("Error while checking");
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 import requestsandresults.LoginRequest;
 
 import java.sql.SQLException;
@@ -14,19 +15,23 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public void createUser(UserData user) throws DataAccessException {
         var statement = "INSERT INTO userdata (username, password, email) VALUES (?, ?, ?)";
-        DatabaseManager.executeUpdate(statement, user.username(), user.password(), user.email());
+        DatabaseManager.executeUpdate(statement, user.username(), hashPassword(user.password()), user.email());
+    }
+
+    private String hashPassword(String password){
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     @Override
     public boolean verifyUser(LoginRequest request) throws DataAccessException {
-        var statement = "SELECT username FROM userdata WHERE username = ? AND password = ?";
+        var statement = "SELECT password FROM userdata WHERE username = ?";
         try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
             ps.setString(1, request.username());
-            ps.setString(2, request.password());
             var rs = ps.executeQuery();
 
             if(rs.next()){
-                return true;
+                String hashpass = rs.getString("password");
+                return BCrypt.checkpw(request.password(), hashpass);
             }
             throw new SQLException();
         } catch (SQLException e) {
@@ -46,8 +51,20 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
+    public boolean isEmpty() throws DataAccessException {
+        int num;
+        var statement = "SELECT COUNT(*) FROM userdata";
+        try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
+            var rs = ps.executeQuery();
+
+            if(rs.next()){
+                num = rs.getInt(1);
+                return num == 0;
+            }
+            throw new SQLException();
+        } catch (SQLException e) {
+            throw new DataAccessException("Error while checking");
+        }
     }
 
 
