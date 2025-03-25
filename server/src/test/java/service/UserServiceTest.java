@@ -10,6 +10,7 @@ import passoff.model.TestResult;
 import passoff.model.TestUser;
 import requestsandresults.*;
 import server.Server;
+import service.UserService;
 
 import java.net.HttpURLConnection;
 import java.util.Locale;
@@ -22,6 +23,7 @@ public class UserServiceTest {
     String existingAuth;
 
     AuthData newAuth = new AuthData( existingAuth, newUser.username());
+    RegisterResult regResult;
 
     public UserServiceTest() throws DataAccessException {
     }
@@ -30,7 +32,7 @@ public class UserServiceTest {
     public void setup() throws DataAccessException {
         userService.clear();
 
-        RegisterResult regResult = userService.register(new RegisterRequest(newUser.username(), newUser.password(), newUser.email()));
+        regResult = userService.register(new RegisterRequest(newUser.username(), newUser.password(), newUser.email()));
         existingAuth = regResult.authToken();
     }
 
@@ -38,11 +40,11 @@ public class UserServiceTest {
     @Test
     @DisplayName("Successful register")
         public void register() throws DataAccessException {
-            RegisterResult registerResult = userService.register(new RegisterRequest(newUser.username(), newUser.email(), newUser.password()));
+//            RegisterResult registerResult = userService.register(new RegisterRequest(newUser.username(), newUser.password(), newUser.email()));
 
-            Assertions.assertEquals(newUser.username(), registerResult.username(),
+            Assertions.assertEquals(newUser.username(), regResult.username(),
                 "Response did not have the same username as was registered");
-            Assertions.assertNotNull(registerResult.authToken(), "Response did not contain an authentication string");
+            Assertions.assertNotNull(regResult.authToken(), "Response did not contain an authentication string");
         }
 
     @Test

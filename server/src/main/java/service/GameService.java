@@ -27,6 +27,10 @@ public class GameService {
         return new ListResult(gameDB.getAllGames());
     }
 
+    public GameData getGame(int gameID) throws DataAccessException{
+        return gameDB.getGame(gameID);
+    }
+
     public void clear() throws DataAccessException {
         gameDB.clear();
     }

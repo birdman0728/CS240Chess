@@ -1,5 +1,6 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.ErrorResult;
@@ -133,16 +134,17 @@ public class Server {
         try{
             JoinRequest request = new JoinRequest(authToken, user.playerColor(), user.gameID(), userService.getUser(authToken).username());
             userService.verifyAuth(authToken);
-//            res.status(200);
-            return new Gson().toJson(gameService.joinGame(request));
-        }catch(DataAccessException e){
-            if(e.getMessage().equals("Error: already Taken")){
+            if(request.playerColor() == ChessGame.TeamColor.BLACK && gameService.getGame(user.gameID()).blackUsername() == null
+            || request.playerColor() == ChessGame.TeamColor.WHITE && gameService.getGame(user.gameID()).whiteUsername() == null){
+                return new Gson().toJson(gameService.joinGame(request));
+            }else{
                 res.status(403);
-                return new Gson().toJson(new ErrorResult(e.getMessage()));
-            }else {
-                res.status(401);
-                return new Gson().toJson(unauthorizedError());
+                return new Gson().toJson(new ErrorResult("Error: already taken"));
             }
+
+        }catch(DataAccessException e){
+            res.status(401);
+            return new Gson().toJson(unauthorizedError());
         }
     }
 
