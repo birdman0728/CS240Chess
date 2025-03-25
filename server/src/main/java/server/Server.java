@@ -60,7 +60,7 @@ public class Server {
         }
     }
 
-    private Object clear(Request req, Response res) {
+    private Object clear(Request req, Response res) throws DataAccessException {
         userService.clear();
         gameService.clear();
 

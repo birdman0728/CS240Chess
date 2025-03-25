@@ -57,8 +57,8 @@ public class UserService {
         return authDB.getDataFromAuth(authToken);
     }
 
-    public void clear(){//TODO revamp clear class
-        userDB = new MemUserDAO();
-        authDB = new MemAuthDAO();
+    public void clear() throws DataAccessException {//TODO revamp clear class
+        userDB.clear();
+        authDB.clear();
     }
 }

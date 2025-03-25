@@ -3,6 +3,7 @@ package service;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.MemGameDAO;
+import dataaccess.SQLGameDAO;
 import model.GameData;
 import requestsandresults.*;
 
@@ -10,7 +11,8 @@ import java.util.Set;
 
 public class GameService {
 
-    GameDAO gameDB = new MemGameDAO();
+    GameDAO gameDB = new SQLGameDAO();
+//    GameDAO gameDB = new MemGameDAO();
 
     public CreateResult createGame(CreateRequest request) throws DataAccessException {
         return new CreateResult(gameDB.createGame(request.gameName()));
@@ -25,7 +27,7 @@ public class GameService {
         return new ListResult(gameDB.getAllGames());
     }
 
-    public void clear() {
-    gameDB = new MemGameDAO();
+    public void clear() throws DataAccessException {
+        gameDB.clear();
     }
 }
