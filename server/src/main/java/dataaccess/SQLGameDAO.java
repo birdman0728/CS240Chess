@@ -14,14 +14,20 @@ public class SQLGameDAO implements GameDAO{
     @Override
     public int createGame(String gameName) throws DataAccessException { //TODO when saving in SQL, JSON IT TO A STRING
         ChessGame newGame = new ChessGame();
-        String serializedGame = new Gson().toJson(newGame);
+        String serializedGame = serializeGame(newGame);
         var statement = "INSERT INTO gamedata (whiteUsername, blackUsername, gameName, game) values (?, ?, ?, ?)";
         return DatabaseManager.executeUpdate(statement, null, null, gameName, serializedGame);
     }
 
     @Override
     public void joinGame(JoinRequest request) throws DataAccessException {
-
+        if(request.playerColor() == ChessGame.TeamColor.WHITE){
+            var statement = "UPDATE gamedata SET whiteUsername = (?) WHERE gameID = (?)";
+            DatabaseManager.executeUpdate(statement, request.username(), request.gameID());
+        }else{
+            var statement = "UPDATE gamedata SET blackUsername = (?) WHERE gameID = (?)";
+            DatabaseManager.executeUpdate(statement, request.username(), request.gameID());
+        }
     }
 
     @Override
@@ -67,16 +73,21 @@ public class SQLGameDAO implements GameDAO{
         }
     }
 
-    //TODO list 0 games
+    private String serializeGame (ChessGame game){
+        return new Gson().toJson(game);
+    }
+
 
     @Override
     public void updateGame(GameData newGame, int gameID) throws DataAccessException {
-
+        var statement = "UPDATE gamedata SET game = (?) WHERE gameID = (?)";
+        DatabaseManager.executeUpdate(statement, serializeGame(newGame.game()), gameID);
     }
 
     @Override
     public void deleteGame(int gameID) throws DataAccessException {
-
+        var statement = "DELETE gamedata WHERE gameID = (?)";
+        DatabaseManager.executeUpdate(statement, gameID);
     }
 
     @Override

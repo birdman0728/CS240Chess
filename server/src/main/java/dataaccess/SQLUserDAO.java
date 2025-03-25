@@ -79,6 +79,11 @@ public class SQLUserDAO implements UserDAO {
                 )
             """
     };
+//    CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES UserData(username)
+
+
+    //                CONSTRAINT fk_whiteUsername FOREIGN KEY (whiteUsername) REFERENCES UserData(username),
+    //                CONSTRAINT fk_blackUsername FOREIGN KEY (blackUsername) REFERENCES UserData(username)
 
 
     private void configureDatabase() throws DataAccessException {

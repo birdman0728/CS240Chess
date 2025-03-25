@@ -1,16 +1,16 @@
 package passoff.dataaccess;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
+import chess.InvalidMoveException;
 import dataaccess.*;
 import dataaccess.DatabaseManager;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
-import requestsandresults.CreateResult;
-import requestsandresults.LoginRequest;
-import requestsandresults.RegisterRequest;
-import requestsandresults.RegisterResult;
+import requestsandresults.*;
 import service.UserService;
 
 import javax.xml.crypto.Data;
@@ -132,6 +132,36 @@ public class SQLDatabaseTests {
         assertEquals(5, gameDAO.getAllGames().size(),
                 "Does not list all the games");
     }
+
+    @Test
+    @DisplayName("List 0 games")
+    public void listnogames() throws DataAccessException{
+        gameDAO.clear();
+        assertEquals(0, gameDAO.getAllGames().size(), "not listing 0 games");
+    }
+
+
+
+    @Test
+    @DisplayName("Successful Join Game")
+    public void joinGame() throws DataAccessException{
+        gameDAO.joinGame(new JoinRequest(existingAuth, ChessGame.TeamColor.BLACK, gameID, "blackJoined"));
+        gameDAO.joinGame(new JoinRequest(existingAuth, ChessGame.TeamColor.WHITE, gameID, "whiteJoined"));
+        GameData endData = new GameData(gameID, "whiteJoined", "blackJoined", gameName, new ChessGame());
+        assertEquals(endData, gameDAO.getGame(gameID),"usernames not updating");
+    }
+
+//    @Test
+//    @DisplayName("")
+
+    @Test
+    @DisplayName("Successful Update game")
+    public void updateGame() throws InvalidMoveException, DataAccessException {
+        ChessGame testGame = new ChessGame();
+        testGame.makeMove(new ChessMove(new ChessPosition(2,2), new ChessPosition(3,2), null));
+        gameDAO.updateGame(new GameData(1,"irrelevant", "irrelevant", "irrelevant", testGame), gameID);
+    }
+    //TODO fail case
 
     @Test
     public void clear() throws DataAccessException {//TODO create actual tests
