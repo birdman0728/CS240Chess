@@ -86,8 +86,7 @@ public class DatabaseManager {
                         case ChessGame p ->
                                 ps.setString(i + 1, p.toString());//TODO figure out if serialize game before or during this
                         case null -> ps.setNull(i + 1, NULL);
-                        default -> {
-                        }
+                        default -> throw new DataAccessException("Error");
                     }
                 }
                 int returnValue = ps.executeUpdate();
