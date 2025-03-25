@@ -151,8 +151,14 @@ public class SQLDatabaseTests {
         assertEquals(endData, gameDAO.getGame(gameID),"usernames not updating");
     }
 
-//    @Test
-//    @DisplayName("")
+    @Test
+    @DisplayName("Game Doesn't exist")
+    public void failJoinGame() throws DataAccessException{
+        assertThrows(DataAccessException.class, ()->{
+            gameDAO.joinGame(new JoinRequest(existingAuth, ChessGame.TeamColor.WHITE, -1, "ladiesman217"));
+        },"bad request");
+
+    }
 
     @Test
     @DisplayName("Successful Update game")
@@ -161,7 +167,14 @@ public class SQLDatabaseTests {
         testGame.makeMove(new ChessMove(new ChessPosition(2,2), new ChessPosition(3,2), null));
         gameDAO.updateGame(new GameData(1,"irrelevant", "irrelevant", "irrelevant", testGame), gameID);
     }
-    //TODO fail case
+
+    @Test
+    @DisplayName("Doesn't update game")
+    public void failedUpdate(){
+        assertThrows(DataAccessException.class, ()->{
+            gameDAO.updateGame(new GameData(-1, "", "", "bob", new ChessGame()), -1);
+        },"bad request");
+    }
 
     @Test
     public void clear() throws DataAccessException {//TODO create actual tests

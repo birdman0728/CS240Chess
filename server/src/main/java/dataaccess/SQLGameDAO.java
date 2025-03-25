@@ -21,12 +21,14 @@ public class SQLGameDAO implements GameDAO{
 
     @Override
     public void joinGame(JoinRequest request) throws DataAccessException {
+        var statement = "";
         if(request.playerColor() == ChessGame.TeamColor.WHITE){
-            var statement = "UPDATE gamedata SET whiteUsername = (?) WHERE gameID = (?)";
-            DatabaseManager.executeUpdate(statement, request.username(), request.gameID());
-        }else{
-            var statement = "UPDATE gamedata SET blackUsername = (?) WHERE gameID = (?)";
-            DatabaseManager.executeUpdate(statement, request.username(), request.gameID());
+            statement = "UPDATE gamedata SET whiteUsername = (?) WHERE gameID = (?)";
+        }else if (request.playerColor() == ChessGame.TeamColor.BLACK){
+            statement = "UPDATE gamedata SET blackUsername = (?) WHERE gameID = (?)";
+        }
+        if(DatabaseManager.executeUpdate(statement, request.username(), request.gameID()) == 0){
+            throw new DataAccessException("Didn't update");
         }
     }
 
@@ -81,7 +83,9 @@ public class SQLGameDAO implements GameDAO{
     @Override
     public void updateGame(GameData newGame, int gameID) throws DataAccessException {
         var statement = "UPDATE gamedata SET game = (?) WHERE gameID = (?)";
-        DatabaseManager.executeUpdate(statement, serializeGame(newGame.game()), gameID);
+        if(DatabaseManager.executeUpdate(statement, serializeGame(newGame.game()), gameID) == 0){
+            throw new DataAccessException("Didn't update");
+        }
     }
 
     @Override

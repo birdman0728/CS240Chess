@@ -85,14 +85,14 @@ public class DatabaseManager {
                     else if (param instanceof ChessGame p) ps.setString(i + 1, p.toString());//TODO figure out if serialize game before or during this
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
-                ps.executeUpdate();
+                int returnValue = ps.executeUpdate();
 
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     return rs.getInt(1);
                 }
 
-                return 0;
+                return returnValue;
             }
         } catch (SQLException e) {
             throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
