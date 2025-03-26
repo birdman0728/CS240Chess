@@ -57,7 +57,7 @@ public class UserService {
         return authDB.getDataFromAuth(authToken);
     }
 
-    public void clear() throws DataAccessException {//TODO revamp clear class
+    public void clear() throws DataAccessException {
         userDB.clear();
         authDB.clear();
     }

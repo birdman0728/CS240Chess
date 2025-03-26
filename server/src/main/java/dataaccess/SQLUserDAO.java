@@ -41,7 +41,7 @@ public class SQLUserDAO implements UserDAO {
 
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE TABLE userdata;";
+        var statement = "TRUNCATE TABLE userdata";
         try(var ps = DatabaseManager.getConnection().prepareStatement(statement)){
             ps.executeUpdate();
 
@@ -70,7 +70,7 @@ public class SQLUserDAO implements UserDAO {
 
     private final String[] createStatements = { //TODO set auth and game foreign keys correctly
             """
-            CREATE TABLE IF NOT EXISTS  UserData (
+            CREATE TABLE IF NOT EXISTS  userdata (
                 `username` varchar(256) NOT NULL,
                 `password` varchar(256) NOT NULL,
                 `email` varchar(256) NOT NULL,
@@ -78,7 +78,7 @@ public class SQLUserDAO implements UserDAO {
                 )
             """,
             """
-            CREATE TABLE IF NOT EXISTS AuthData (
+            CREATE TABLE IF NOT EXISTS authdata (
                 `authToken` varchar(256) NOT NULL,
                 `username` varchar(256) NOT NULL,
                 PRIMARY KEY (`authToken`),
@@ -86,7 +86,7 @@ public class SQLUserDAO implements UserDAO {
                 )
             """,
             """
-            CREATE TABLE IF NOT EXISTS GameData (
+            CREATE TABLE IF NOT EXISTS gamedata (
                 `gameID` int NOT NULL AUTO_INCREMENT,
                 `whiteUsername` varchar(256),
                 `blackUsername` varchar(256),
