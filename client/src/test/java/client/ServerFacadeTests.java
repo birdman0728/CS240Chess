@@ -2,6 +2,7 @@ package client;
 
 import org.junit.jupiter.api.*;
 import server.Server;
+//import
 
 
 public class ServerFacadeTests {
@@ -24,6 +25,11 @@ public class ServerFacadeTests {
     @Test
     public void sampleTest() {
         Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void normalReg(){
+
     }
 
 }

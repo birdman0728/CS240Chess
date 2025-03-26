@@ -4,20 +4,13 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import chess.InvalidMoveException;
-import dataaccess.*;
-import dataaccess.DatabaseManager;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.*;
 import requestsandresults.*;
 import service.UserService;
 
-import javax.xml.crypto.Data;
-import java.sql.SQLException;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SQLDatabaseTests {

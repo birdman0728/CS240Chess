@@ -2,12 +2,9 @@ package service;
 
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
-import dataaccess.MemGameDAO;
 import dataaccess.SQLGameDAO;
 import model.GameData;
 import requestsandresults.*;
-
-import java.util.Set;
 
 public class GameService {
 

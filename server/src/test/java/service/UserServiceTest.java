@@ -1,19 +1,10 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.*;
-import passoff.model.TestAuthResult;
-import passoff.model.TestResult;
-import passoff.model.TestUser;
 import requestsandresults.*;
-import server.Server;
-import service.UserService;
-
-import java.net.HttpURLConnection;
-import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 public class UserServiceTest {

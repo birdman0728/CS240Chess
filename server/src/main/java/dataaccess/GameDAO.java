@@ -1,10 +1,8 @@
 package dataaccess;
 
-import chess.ChessGame;
 import model.GameData;
 import requestsandresults.JoinRequest;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public interface GameDAO {
