@@ -27,26 +27,27 @@ public class ServerFacadeTests {
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
         sF = new ServerFacade("http://localhost:" + port);
+    }
+    @BeforeEach
+    public void prep(){
         sF.register(new RegisterRequest(testUser,password,email));
         authToken = sF.login(new LoginRequest(testUser, password)).authToken();
         gameID = sF.create(new CreateRequest(authToken, gameName)).gameID();
     }
 
+    @AfterEach
+    public void cleanup(){
+        sF.clear();
+    }
+
     @AfterAll
     static void stopServer() {
-        sF.clear();
         server.stop();
     }
 
-//    @Test
-//    public void sampleTest() {
-//        Assertions.assertTrue(true);
-//    }
-
     @Test
     public void normalReg(){
-        sF.clear();
-        Assertions.assertNotNull(sF.register(new RegisterRequest(testUser,password,email)), "Not properly returning a Register Result");
+        Assertions.assertNotNull(sF.register(new RegisterRequest("newguy",password,email)), "Not properly returning a Register Result");
     }
 
     @Test
