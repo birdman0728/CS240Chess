@@ -1,6 +1,7 @@
 package Server;
 
 import com.google.gson.Gson;
+import com.sun.net.httpserver.Request;
 import requestsandresults.*;
 //import model.Pet;
 
@@ -18,45 +19,49 @@ public class ServerFacade {
 //////////TODO add endpoints
     public RegisterResult register(RegisterRequest request){
         var path = "/user";
-        return this.makeRequest("POST", path, request, RegisterResult.class);
+        return this.makeRequest("POST", path,null, request, RegisterResult.class);
     }
 
     public LoginResult login(LoginRequest request){
         var path = "/session";
-        return this.makeRequest("POST", path, request, LoginResult.class);
+        return this.makeRequest("POST", path,null, request, LoginResult.class);
     }
 
     public LogoutResult logout(LogoutRequest request){
         var path = "/session";
-        return this.makeRequest("DELETE", path, request, LogoutResult.class);
+        return this.makeRequest("DELETE", path, request.authToken(), null, LogoutResult.class);
     }
 
     public ListResult listGames(ListRequest request){
         var path = "/game";
-        return this.makeRequest("GET", path, request, ListResult.class);
+        return this.makeRequest("GET", path, request.authToken(), null, ListResult.class);
     }
 
     public CreateResult create(CreateRequest request){
         var path = "/game";
-        return this.makeRequest("POST", path, request, CreateResult.class);
+        return this.makeRequest("POST", path, request.authToken(), request, CreateResult.class);
     }
 
     public JoinResult join(JoinRequest request){
-        var path = "/game";
-        return this.makeRequest("PUT", path, request, JoinResult.class);
+        var path = "/game";//TODO check on auth token for this
+        return this.makeRequest("PUT", path, request.authToken(), request, JoinResult.class);
     }
 
     public ClearResult clear(){
         var path = "/db";
-        return this.makeRequest("DELETE", path, null, ClearResult.class);
+        return this.makeRequest("DELETE", path, null, null, ClearResult.class);
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass){
+    private <T> T makeRequest(String method, String path, String authToken, Object request, Class<T> responseClass){
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+
+            if(authToken != null){
+                http.setRequestProperty("authorization", authToken);
+            }
 
             writeBody(request, http);
             http.connect();
