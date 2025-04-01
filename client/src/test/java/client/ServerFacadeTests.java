@@ -3,9 +3,7 @@ package client;
 import dataaccess.DataAccessException;
 import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.*;
-import requestsandresults.LoginRequest;
-import requestsandresults.LoginResult;
-import requestsandresults.RegisterRequest;
+import requestsandresults.*;
 import server.Server;
 import Server.ServerFacade;
 
@@ -54,7 +52,23 @@ public class ServerFacadeTests {
 
     @Test
     public void normalLogin(){
-        Assertions.assertNotNull(sF.login(new LoginRequest(testUser, password)).authToken());
+        Assertions.assertNotNull(sF.login(new LoginRequest(testUser, password)).authToken(),"Error in logging in correctly");
     }
+
+    @Test
+    public void badLogin(){
+        Assertions.assertNull(sF.login(new LoginRequest("not correct", "also not correct")),"Not catching bad login");
+    }
+
+    @Test
+    public void normalLogout(){
+        Assertions.assertEquals(new LogoutResult(), sF.logout(new LogoutRequest(authToken)),"Not logging out correctly");
+    }
+
+    @Test
+    public void badAuthLogout(){
+        Assertions.assertNull(sF.logout(new LogoutRequest("alkn3j9fnsljfs")),"Not catching a bad logout");
+    }
+
 
 }
