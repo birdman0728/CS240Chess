@@ -1,8 +1,7 @@
 package Server;
 
 import com.google.gson.Gson;
-import requestsandresults.RegisterRequest;
-import requestsandresults.RegisterResult;
+import requestsandresults.*;
 //import model.Pet;
 
 import java.io.*;
@@ -20,6 +19,36 @@ public class ServerFacade {
     public RegisterResult register(RegisterRequest request){
         var path = "/user";
         return this.makeRequest("POST", path, request, RegisterResult.class);
+    }
+
+    public LoginResult login(LoginRequest request){
+        var path = "/session";
+        return this.makeRequest("POST", path, request, LoginResult.class);
+    }
+
+    public LogoutResult logout(LogoutRequest request){
+        var path = "/session";
+        return this.makeRequest("DELETE", path, request, LogoutResult.class);
+    }
+
+    public ListResult listGames(ListRequest request){
+        var path = "/game";
+        return this.makeRequest("GET", path, request, ListResult.class);
+    }
+
+    public CreateResult create(CreateRequest request){
+        var path = "/game";
+        return this.makeRequest("POST", path, request, CreateResult.class);
+    }
+
+    public JoinResult join(JoinRequest request){
+        var path = "/game";
+        return this.makeRequest("PUT", path, request, JoinResult.class);
+    }
+
+    public ClearResult clear(){
+        var path = "/db";
+        return this.makeRequest("DELETE", path, null, ClearResult.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass){
