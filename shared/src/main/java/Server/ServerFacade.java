@@ -16,7 +16,6 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-//////////TODO add endpoints
     public RegisterResult register(RegisterRequest request){
         var path = "/user";
         return this.makeRequest("POST", path,null, request, RegisterResult.class);
