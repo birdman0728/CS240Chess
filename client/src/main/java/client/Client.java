@@ -7,6 +7,7 @@ import Server.ServerFacade;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import com.sun.source.tree.WhileLoopTree;
 import model.AuthData;
 import model.GameData;
 import requestsandresults.*;
@@ -126,15 +127,15 @@ public class Client {
     private String play(String[] params) throws Exception{
         if(signedIn){
             ChessGame.TeamColor color;
-            if(Objects.equals(params[0], "White")){
+            if(Objects.equals(params[1], "white")){
                 color = ChessGame.TeamColor.WHITE;
-            }else if(Objects.equals(params[0], "Black")){
+            }else if(Objects.equals(params[1], "black")){
                 color = ChessGame.TeamColor.BLACK;
             }else{
                 throw new Exception("Please specify which team you'd like to join");
             }
 
-            int gameID = Integer.parseInt(params[1]);
+            int gameID = Integer.parseInt(params[0]);
             StringBuilder output = new StringBuilder();
             ChessGame curGame = null;
 
@@ -147,12 +148,38 @@ public class Client {
                 }
             }
 
+            boolean whiteBG = true;
+            if(color == ChessGame.TeamColor.WHITE){
+                for (int i = 1; i < 9; i++) {
+                    for (int j = 1; j < 9; j++) {
+                        if(whiteBG){
+                            output.append(EscapeSequences.SET_BG_COLOR_WHITE);
+                            whiteBG = false;
+                        }else{
+                            output.append(EscapeSequences.SET_BG_COLOR_BLACK);
+                            whiteBG = true;
+                        }
 
-            for(int i = 1; i < 9; i++){
-                for(int j = 1; j < 9; j++ ){
-                    assert curGame != null;
-                    ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(j,i)).getPieceType();
-                    output.append(CalcPiece(type, color));
+                        assert curGame != null;
+                        if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
+                            ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
+                            output.append(CalcPiece(type, color));
+                        }
+                    }
+                    output.append("\n");
+                    whiteBG = !whiteBG;
+                }
+            }else{
+                for (int i = 8; i > 0; i--) {
+                    for (int j = 8; j > 0; j--) {
+                        assert curGame != null;
+                        if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null){
+                            ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
+                            output.append(CalcPiece(type, color));
+                        }
+                    }
+                    output.append("\n");
+
                 }
             }
 
@@ -163,60 +190,55 @@ public class Client {
         }
     }
 
-    private String CalcPiece(ChessPiece.PieceType type, ChessGame.TeamColor color){
-        switch(type){
+    private String CalcPiece(ChessPiece.PieceType type, ChessGame.TeamColor color) {
+        switch (type) {
             case KING:
-                if(color == ChessGame.TeamColor.BLACK){
+                if (color == ChessGame.TeamColor.BLACK) {
                     return EscapeSequences.BLACK_KING;
-                }else{
+                } else {
                     return EscapeSequences.WHITE_KING;
                 }
-                break;
 
             case QUEEN:
-                if(color == ChessGame.TeamColor.BLACK){
+                if (color == ChessGame.TeamColor.BLACK) {
                     return EscapeSequences.BLACK_QUEEN;
-                }else{
+                } else {
                     return EscapeSequences.WHITE_QUEEN;
                 }
-                break;
 
             case BISHOP:
-                if(color == ChessGame.TeamColor.BLACK){
+                if (color == ChessGame.TeamColor.BLACK) {
                     return EscapeSequences.BLACK_BISHOP;
-                }else{
+                } else {
                     return EscapeSequences.WHITE_BISHOP;
                 }
-                break;
 
             case ROOK:
-                if(color == ChessGame.TeamColor.BLACK){
+                if (color == ChessGame.TeamColor.BLACK) {
                     return EscapeSequences.BLACK_ROOK;
-                }else{
+                } else {
                     return EscapeSequences.WHITE_ROOK;
                 }
-                break;
 
             case KNIGHT:
-                if(color == ChessGame.TeamColor.BLACK){
+                if (color == ChessGame.TeamColor.BLACK) {
                     return EscapeSequences.BLACK_KNIGHT;
-                }else{
+                } else {
                     return EscapeSequences.WHITE_KNIGHT;
                 }
-                break;
 
             case PAWN:
-                if(color == ChessGame.TeamColor.BLACK){
+                if (color == ChessGame.TeamColor.BLACK) {
                     return EscapeSequences.BLACK_PAWN;
-                }else{
+                } else {
                     return EscapeSequences.WHITE_PAWN;
                 }
-                break;
 
             default:
                 return EscapeSequences.EMPTY;
 
         }
+    }
 
     private String logout() throws Exception{
         if(signedIn){
