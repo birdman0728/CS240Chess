@@ -73,18 +73,23 @@ public class Client {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            return switch (cmd) {
-                case "register" -> register(params); //TODO implement an actual exception in server
-                case "login" -> login(params);
-
-                case "create" -> create(params);
-                case "list" -> list();
-                case "play" -> play(params);
+            if(!signedIn) {
+                return switch (cmd) {
+                    case "register" -> register(params); //TODO implement an actual exception in server
+                    case "login" -> login(params);
+                    default -> help();
+                };
+            }else {
+                return switch (cmd) {
+                    case "create" -> create(params);
+                    case "list" -> list();
+                    case "play" -> play(params);
 //                case "observe" -> observe(params);
-                case "logout" -> logout();
-                case "quit" -> "quit";
-                default -> help();
-            };
+                    case "logout" -> logout();
+                    case "quit" -> "quit";
+                    default -> help();
+                };
+            }
         } catch (Exception ex) {
             return ex.getMessage();
         }
@@ -94,19 +99,22 @@ public class Client {
 
 //    private String observe(String[] params) throws Exception{
 //        if(signedIn){
-//            //TODO figure out observe
+//            //TODO figure out observe/do redraw on it's own
+//              TODO Make errors not show up
+//              TODO make Server Facade throw errors and tests adjust
 //        }
 //    }
-    private String create(String[] params) throws Exception{ //TODO res is null?
+
+    private String create(String[] params) throws Exception{
         if(signedIn && params.length == 1){
             CreateResult res = server.create(new CreateRequest(AuthToken.authToken(), params[0]));
             return "Game " + params[0] + " created with id: " + res.gameID() + "\n";
         }else{
-            throw new Exception("Not signed in or no name added");
+            throw new Exception("Not signed in or no name added\n");
         }
     }
 
-    private String list() throws Exception{
+    private String list() throws Exception{//TODO Make number independent of gameID
         if(signedIn){
             ListResult res = server.listGames(new ListRequest(AuthToken.authToken()));
             if(res != null) {
@@ -132,7 +140,7 @@ public class Client {
             }else if(Objects.equals(params[1], "black")){
                 color = ChessGame.TeamColor.BLACK;
             }else{
-                throw new Exception("Please specify which team you'd like to join");
+                throw new Exception("Please specify which team you'd like to join\n");
             }
 
             int gameID = Integer.parseInt(params[0]);
@@ -144,94 +152,114 @@ public class Client {
             for(GameData game : server.listGames(new ListRequest(AuthToken.authToken())).games()){
                 if(game.gameID() == gameID){
                     curGame = game.game();
-                    output.append("Joinging Game: ").append(game.gameName()).append("\n\n");
+                    output.append("Joining Game: ").append(game.gameName()).append("\n\n");
                 }
             }
 
-            boolean whiteBG = true;
-            if(color == ChessGame.TeamColor.WHITE){
-                for (int i = 1; i < 9; i++) {
-                    for (int j = 1; j < 9; j++) {
-                        if(whiteBG){
-                            output.append(EscapeSequences.SET_BG_COLOR_WHITE);
-                            whiteBG = false;
-                        }else{
-                            output.append(EscapeSequences.SET_BG_COLOR_BLACK);
-                            whiteBG = true;
-                        }
-
-                        assert curGame != null;
-                        if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
-                            ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
-                            output.append(CalcPiece(type, color));
-                        }
-                    }
-                    output.append("\n");
-                    whiteBG = !whiteBG;
-                }
-            }else{
-                for (int i = 8; i > 0; i--) {
-                    for (int j = 8; j > 0; j--) {
-                        assert curGame != null;
-                        if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null){
-                            ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
-                            output.append(CalcPiece(type, color));
-                        }
-                    }
-                    output.append("\n");
-
-                }
-            }
+            output.append(drawBoard(color, curGame));
 
             return output.toString();
 
         }else{
-            throw new Exception("Please specify which game you'd like to join");
+            throw new Exception("Please specify which game you'd like to join\n");
         }
     }
+
+    private String drawBoard(ChessGame.TeamColor color, ChessGame curGame){
+        StringBuilder output = new StringBuilder();
+        boolean whiteBG = false;
+        if(color == ChessGame.TeamColor.WHITE){
+            for (int i = 1; i < 9; i++) {
+                for (int j = 1; j < 9; j++) {
+                    if(whiteBG){
+                        output.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+                        whiteBG = false;
+                    }else{
+                        output.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+                        whiteBG = true;
+                    }
+
+                    assert curGame != null;
+                    if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
+                        ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
+                        output.append(CalcPiece(type, color)).append(EscapeSequences.RESET_TEXT_COLOR);
+                        output.append(EscapeSequences.RESET_BG_COLOR);
+                    }else{
+                        output.append(EscapeSequences.EMPTY).append(EscapeSequences.RESET_BG_COLOR);
+                    }
+                }
+                output.append("\n");
+                whiteBG = !whiteBG;
+            }
+        }else{
+            for (int i = 8; i > 0; i--) {
+                for (int j = 8; j > 0; j--) {
+                    if(whiteBG){
+                        output.append(EscapeSequences.SET_BG_COLOR_BLACK);
+                        whiteBG = false;
+                    }else{
+                        output.append(EscapeSequences.SET_BG_COLOR_WHITE);
+                        whiteBG = true;
+                    }
+
+                    assert curGame != null;
+                    if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
+                        ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
+                        output.append(CalcPiece(type, color)).append(EscapeSequences.RESET_TEXT_COLOR);
+                        output.append(EscapeSequences.RESET_BG_COLOR);
+                    }else{
+                        output.append(EscapeSequences.EMPTY).append(EscapeSequences.RESET_BG_COLOR);
+                    }
+                }
+                output.append("\n");
+                whiteBG = !whiteBG;
+            }
+        }
+        return output.toString();
+    }//TODO Create border with numbers/letters so you can see where you're moving to
 
     private String CalcPiece(ChessPiece.PieceType type, ChessGame.TeamColor color) {
         switch (type) {
             case KING:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_KING;
+                    return EscapeSequences.BLACK_KING + EscapeSequences.SET_TEXT_COLOR_BLUE;
                 } else {
-                    return EscapeSequences.WHITE_KING;
+                    return EscapeSequences.WHITE_KING + EscapeSequences.SET_TEXT_COLOR_RED;
                 }
 
             case QUEEN:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_QUEEN;
+                    return EscapeSequences.BLACK_QUEEN + EscapeSequences.SET_TEXT_COLOR_BLUE;
                 } else {
-                    return EscapeSequences.WHITE_QUEEN;
+                    return EscapeSequences.WHITE_QUEEN + EscapeSequences.SET_TEXT_COLOR_RED;
                 }
 
             case BISHOP:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_BISHOP;
+                    return EscapeSequences.BLACK_BISHOP + EscapeSequences.SET_TEXT_COLOR_BLUE;
                 } else {
-                    return EscapeSequences.WHITE_BISHOP;
+                    return EscapeSequences.WHITE_BISHOP + EscapeSequences.SET_TEXT_COLOR_RED;
                 }
 
             case ROOK:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_ROOK;
+                    return EscapeSequences.BLACK_ROOK + EscapeSequences.SET_TEXT_COLOR_BLUE;
                 } else {
-                    return EscapeSequences.WHITE_ROOK;
+                    return EscapeSequences.WHITE_ROOK + EscapeSequences.SET_TEXT_COLOR_RED;
                 }
 
             case KNIGHT:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_KNIGHT;
+                    return EscapeSequences.BLACK_KNIGHT + EscapeSequences.SET_TEXT_COLOR_BLUE;
                 } else {
-                    return EscapeSequences.WHITE_KNIGHT;
+                    return EscapeSequences.WHITE_KNIGHT + EscapeSequences.SET_TEXT_COLOR_RED;
                 }
 
             case PAWN:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_PAWN;
+                    return EscapeSequences.BLACK_PAWN + EscapeSequences.SET_TEXT_COLOR_BLUE;
                 } else {
-                    return EscapeSequences.WHITE_PAWN;
+                    return EscapeSequences.WHITE_PAWN + EscapeSequences.SET_TEXT_COLOR_RED;
                 }
 
             default:
@@ -246,7 +274,7 @@ public class Client {
             signedIn = false;
             return "Logged out. \n";
         }else{
-            throw new Exception("Not signed in");
+            throw new Exception("Not signed in\n");
         }
     }
 
@@ -258,7 +286,7 @@ public class Client {
             signedIn = true;
             return "Successfully registered. \n";
         }else{
-            throw new Exception("Please input a username password than email");
+            throw new Exception("Please input a username password than email\n");
         }
     }
 
@@ -269,7 +297,7 @@ public class Client {
             signedIn = true;
             return "Successfully signed in. \n";
         }else{
-            throw new Exception("Please put email and password");
+            throw new Exception("Please put email and password\n");
         }
     }
 
