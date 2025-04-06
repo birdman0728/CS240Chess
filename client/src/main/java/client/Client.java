@@ -13,15 +13,13 @@ import model.GameData;
 import requestsandresults.*;
 import ui.EscapeSequences;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class Client {
-    private final ServerFacade server;
+    private ServerFacade server;
     boolean signedIn;
     AuthData AuthToken;
+    List<GameData> gamesList;
 
     public Client(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -119,8 +117,11 @@ public class Client {
             ListResult res = server.listGames(new ListRequest(AuthToken.authToken()));
             if(res != null) {
                 String printList = "";
+                int i = 1;
                 for(GameData game : res.games()){
-                    printList += game.gameID() + " " + game.gameName() + " " + "White: " + game.whiteUsername() + " Black: " + game.blackUsername() + "\n";
+                    printList += i + " " + game.gameName() + " " + "White: " + game.whiteUsername() + " Black: " + game.blackUsername() + "\n";
+                    gamesList.add(game);
+                    i++;
                 }
 
                 return printList;
@@ -152,7 +153,7 @@ public class Client {
             for(GameData game : server.listGames(new ListRequest(AuthToken.authToken())).games()){
                 if(game.gameID() == gameID){
                     curGame = game.game();
-                    output.append("Joining Game: ").append(game.gameName()).append("\n\n");
+                    output.append("Joining Game: ").append(game.gameName()).append("\n\n");//TODO specify the order
                 }
             }
 
@@ -165,10 +166,20 @@ public class Client {
         }
     }
 
+    private String boardFormat(ChessGame.TeamColor color){
+        if (color == ChessGame.TeamColor.WHITE){
+            return "8\n7\n6\n5\n4\n3\n2\n1\n  a b c d e f g h\n\n";
+        }else{
+            return "1\n2\n3\n4\n5\n6\n7\n8\n  h g f e d c b a\n\n";
+        }
+    }
+
     private String drawBoard(ChessGame.TeamColor color, ChessGame curGame){
         StringBuilder output = new StringBuilder();
         boolean whiteBG = false;
+        output.append("Board format\n");
         if(color == ChessGame.TeamColor.WHITE){
+            output.append(boardFormat(color));
             for (int i = 1; i < 9; i++) {
                 for (int j = 1; j < 9; j++) {
                     if(whiteBG){
@@ -192,6 +203,7 @@ public class Client {
                 whiteBG = !whiteBG;
             }
         }else{
+            output.append(boardFormat(color));
             for (int i = 8; i > 0; i--) {
                 for (int j = 8; j > 0; j--) {
                     if(whiteBG){
@@ -216,7 +228,7 @@ public class Client {
             }
         }
         return output.toString();
-    }//TODO Create border with numbers/letters so you can see where you're moving to
+    }
 
     private String CalcPiece(ChessPiece.PieceType type, ChessGame.TeamColor color) {
         switch (type) {
@@ -265,6 +277,28 @@ public class Client {
             default:
                 return EscapeSequences.EMPTY;
 
+        }
+    }
+
+    private int calcLetter(String letter){
+        switch(letter) {
+            case "a":
+                return 1;
+            case "b":
+                return 2;
+            case "c":
+                return 3;
+            case "d":
+                return 4;
+            case "e":
+                return 5;
+            case "f":
+                return 6;
+            case "g":
+                return 7;
+            case "h":
+                return 8;
+            default: return 0;
         }
     }
 
