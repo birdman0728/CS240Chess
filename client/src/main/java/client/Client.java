@@ -19,7 +19,7 @@ public class Client {
     private ServerFacade server;
     boolean signedIn;
     AuthData AuthToken;
-    List<GameData> gamesList;
+    List<GameData> gamesList = new ArrayList<>();
 
     public Client(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -82,7 +82,7 @@ public class Client {
                     case "create" -> create(params);
                     case "list" -> list();
                     case "play" -> play(params);
-//                case "observe" -> observe(params);
+                    case "observe" -> observe(params);
                     case "logout" -> logout();
                     case "quit" -> "quit";
                     default -> help();
@@ -93,15 +93,36 @@ public class Client {
         }
     }
 
-
-
-//    private String observe(String[] params) throws Exception{
-//        if(signedIn){
-//            //TODO figure out observe/do redraw on it's own
 //              TODO Make errors not show up
 //              TODO make Server Facade throw errors and tests adjust
-//        }
-//    }
+
+    private String observe(String[] params) throws Exception{//TODO figure out observe/do redraw on it's own
+        StringBuilder output = null;
+        if(signedIn){
+            gamesList.clear();
+            gamesList.addAll(server.listGames(new ListRequest(AuthToken.authToken())).games());
+            if(gamesList != null) {
+                int gameID = Integer.parseInt(params[0]) - 1;
+                ChessGame curGame = null;
+                gameID = gamesList.get(gameID).gameID();
+
+                for(GameData game : server.listGames(new ListRequest(AuthToken.authToken())).games()){
+                    if(game.gameID() == gameID){
+                        curGame = game.game();
+                        output.append("Observing Game: ").append(game.gameName()).append("\n\n");
+                    }
+                }
+
+                output.append(drawBoard(color, curGame));
+
+                return output.toString();
+            }else{
+                return "No games to observe\n";
+            }
+        }else{
+            throw new Exception("You are not signed in");
+        }
+    }
 
     private String create(String[] params) throws Exception{
         if(signedIn && params.length == 1){
@@ -112,15 +133,15 @@ public class Client {
         }
     }
 
-    private String list() throws Exception{//TODO Make number independent of gameID
+    private String list() throws Exception{
         if(signedIn){
-            ListResult res = server.listGames(new ListRequest(AuthToken.authToken()));
-            if(res != null) {
+            gamesList.clear();
+            gamesList.addAll(server.listGames(new ListRequest(AuthToken.authToken())).games());
+            if(gamesList != null) {
                 String printList = "";
                 int i = 1;
-                for(GameData game : res.games()){
+                for(GameData game : gamesList){
                     printList += i + " " + game.gameName() + " " + "White: " + game.whiteUsername() + " Black: " + game.blackUsername() + "\n";
-                    gamesList.add(game);
                     i++;
                 }
 
@@ -134,6 +155,9 @@ public class Client {
     }
 
     private String play(String[] params) throws Exception{
+        gamesList.clear();
+        gamesList.addAll(server.listGames(new ListRequest(AuthToken.authToken())).games());
+
         if(signedIn){
             ChessGame.TeamColor color;
             if(Objects.equals(params[1], "white")){
@@ -144,16 +168,18 @@ public class Client {
                 throw new Exception("Please specify which team you'd like to join\n");
             }
 
-            int gameID = Integer.parseInt(params[0]);
+            int gameID = Integer.parseInt(params[0]) - 1;
             StringBuilder output = new StringBuilder();
             ChessGame curGame = null;
+
+            gameID = gamesList.get(gameID).gameID();
 
 
             server.join(new JoinRequest(AuthToken.authToken(), color, gameID, AuthToken.username()));
             for(GameData game : server.listGames(new ListRequest(AuthToken.authToken())).games()){
                 if(game.gameID() == gameID){
                     curGame = game.game();
-                    output.append("Joining Game: ").append(game.gameName()).append("\n\n");//TODO specify the order
+                    output.append("Joining Game: ").append(game.gameName()).append("\n\n");
                 }
             }
 
@@ -166,21 +192,13 @@ public class Client {
         }
     }
 
-    private String boardFormat(ChessGame.TeamColor color){
-        if (color == ChessGame.TeamColor.WHITE){
-            return "8\n7\n6\n5\n4\n3\n2\n1\n  a b c d e f g h\n\n";
-        }else{
-            return "1\n2\n3\n4\n5\n6\n7\n8\n  h g f e d c b a\n\n";
-        }
-    }
-
     private String drawBoard(ChessGame.TeamColor color, ChessGame curGame){
         StringBuilder output = new StringBuilder();
         boolean whiteBG = false;
         output.append("Board format\n");
         if(color == ChessGame.TeamColor.WHITE){
-            output.append(boardFormat(color));
             for (int i = 1; i < 9; i++) {
+                output.append(i).append(" ");
                 for (int j = 1; j < 9; j++) {
                     if(whiteBG){
                         output.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
@@ -193,7 +211,35 @@ public class Client {
                     assert curGame != null;
                     if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
                         ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
-                        output.append(CalcPiece(type, color)).append(EscapeSequences.RESET_TEXT_COLOR);
+                        color = curGame.getBoard().getPiece(new ChessPosition(i,j)).getTeamColor();
+                        output.append(CalcPiece(type, color));
+//                        System.out.print(output);
+                        output.append(EscapeSequences.RESET_TEXT_COLOR).append(EscapeSequences.RESET_BG_COLOR);
+                    }else{
+                        output.append(EscapeSequences.EMPTY).append(EscapeSequences.RESET_BG_COLOR);
+                    }
+                }
+                output.append("\n");
+                whiteBG = !whiteBG;
+            }
+            output.append("   a   b  c   d  e   f   g   h\n");
+        }else if(color == ChessGame.TeamColor.BLACK){
+            for (int i = 8; i > 0; i--) {
+                output.append(i).append(" ");
+                for (int j = 8; j > 0; j--) {
+                    if(whiteBG){
+                        output.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+                        whiteBG = false;
+                    }else{
+                        output.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+                        whiteBG = true;
+                    }
+
+                    assert curGame != null;
+                    if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
+                        ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
+                        color = curGame.getBoard().getPiece(new ChessPosition(i,j)).getTeamColor();
+                        output.append(CalcPiece(type, color));
                         output.append(EscapeSequences.RESET_BG_COLOR);
                     }else{
                         output.append(EscapeSequences.EMPTY).append(EscapeSequences.RESET_BG_COLOR);
@@ -202,22 +248,24 @@ public class Client {
                 output.append("\n");
                 whiteBG = !whiteBG;
             }
+            output.append("   h   g  f   e   d  c   b   a\n");
         }else{
-            output.append(boardFormat(color));
             for (int i = 8; i > 0; i--) {
+                output.append(i).append(" ");
                 for (int j = 8; j > 0; j--) {
                     if(whiteBG){
-                        output.append(EscapeSequences.SET_BG_COLOR_BLACK);
+                        output.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
                         whiteBG = false;
                     }else{
-                        output.append(EscapeSequences.SET_BG_COLOR_WHITE);
+                        output.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
                         whiteBG = true;
                     }
 
                     assert curGame != null;
                     if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
                         ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
-                        output.append(CalcPiece(type, color)).append(EscapeSequences.RESET_TEXT_COLOR);
+                        color = curGame.getBoard().getPiece(new ChessPosition(i,j)).getTeamColor();
+                        output.append(CalcPiece(type, color));
                         output.append(EscapeSequences.RESET_BG_COLOR);
                     }else{
                         output.append(EscapeSequences.EMPTY).append(EscapeSequences.RESET_BG_COLOR);
@@ -234,44 +282,44 @@ public class Client {
         switch (type) {
             case KING:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_KING + EscapeSequences.SET_TEXT_COLOR_BLUE;
+                    return EscapeSequences.BLACK_KING;
                 } else {
-                    return EscapeSequences.WHITE_KING + EscapeSequences.SET_TEXT_COLOR_RED;
+                    return EscapeSequences.WHITE_KING;
                 }
 
             case QUEEN:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_QUEEN + EscapeSequences.SET_TEXT_COLOR_BLUE;
+                    return EscapeSequences.BLACK_QUEEN;
                 } else {
-                    return EscapeSequences.WHITE_QUEEN + EscapeSequences.SET_TEXT_COLOR_RED;
+                    return EscapeSequences.WHITE_QUEEN;
                 }
 
             case BISHOP:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_BISHOP + EscapeSequences.SET_TEXT_COLOR_BLUE;
+                    return EscapeSequences.BLACK_BISHOP;
                 } else {
-                    return EscapeSequences.WHITE_BISHOP + EscapeSequences.SET_TEXT_COLOR_RED;
+                    return EscapeSequences.WHITE_BISHOP;
                 }
 
             case ROOK:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_ROOK + EscapeSequences.SET_TEXT_COLOR_BLUE;
+                    return EscapeSequences.BLACK_ROOK;
                 } else {
-                    return EscapeSequences.WHITE_ROOK + EscapeSequences.SET_TEXT_COLOR_RED;
+                    return EscapeSequences.WHITE_ROOK;
                 }
 
             case KNIGHT:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_KNIGHT + EscapeSequences.SET_TEXT_COLOR_BLUE;
+                    return EscapeSequences.BLACK_KNIGHT;
                 } else {
-                    return EscapeSequences.WHITE_KNIGHT + EscapeSequences.SET_TEXT_COLOR_RED;
+                    return EscapeSequences.WHITE_KNIGHT;
                 }
 
             case PAWN:
                 if (color == ChessGame.TeamColor.BLACK) {
-                    return EscapeSequences.BLACK_PAWN + EscapeSequences.SET_TEXT_COLOR_BLUE;
+                    return EscapeSequences.BLACK_PAWN;
                 } else {
-                    return EscapeSequences.WHITE_PAWN + EscapeSequences.SET_TEXT_COLOR_RED;
+                    return EscapeSequences.WHITE_PAWN;
                 }
 
             default:
