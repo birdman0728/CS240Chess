@@ -16,7 +16,7 @@ import ui.EscapeSequences;
 import java.util.*;
 
 public class Client {
-    private ServerFacade server;
+    private final ServerFacade server;
     boolean signedIn;
     AuthData AuthToken;
     List<GameData> gamesList = new ArrayList<>();
@@ -96,8 +96,8 @@ public class Client {
 //              TODO Make errors not show up
 //              TODO make Server Facade throw errors and tests adjust
 
-    private String observe(String[] params) throws Exception{//TODO figure out observe/do redraw on it's own
-        StringBuilder output = null;
+    private String observe(String[] params) throws Exception{
+        StringBuilder output = new StringBuilder();
         if(signedIn){
             gamesList.clear();
             gamesList.addAll(server.listGames(new ListRequest(AuthToken.authToken())).games());
@@ -113,7 +113,7 @@ public class Client {
                     }
                 }
 
-                output.append(drawBoard(color, curGame));
+                output.append(drawBoard(ChessGame.TeamColor.WHITE, curGame));
 
                 return output.toString();
             }else{
@@ -195,7 +195,6 @@ public class Client {
     private String drawBoard(ChessGame.TeamColor color, ChessGame curGame){
         StringBuilder output = new StringBuilder();
         boolean whiteBG = false;
-        output.append("Board format\n");
         if(color == ChessGame.TeamColor.WHITE){
             for (int i = 1; i < 9; i++) {
                 output.append(i).append(" ");
@@ -213,7 +212,6 @@ public class Client {
                         ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
                         color = curGame.getBoard().getPiece(new ChessPosition(i,j)).getTeamColor();
                         output.append(CalcPiece(type, color));
-//                        System.out.print(output);
                         output.append(EscapeSequences.RESET_TEXT_COLOR).append(EscapeSequences.RESET_BG_COLOR);
                     }else{
                         output.append(EscapeSequences.EMPTY).append(EscapeSequences.RESET_BG_COLOR);
@@ -223,32 +221,6 @@ public class Client {
                 whiteBG = !whiteBG;
             }
             output.append("   a   b  c   d  e   f   g   h\n");
-        }else if(color == ChessGame.TeamColor.BLACK){
-            for (int i = 8; i > 0; i--) {
-                output.append(i).append(" ");
-                for (int j = 8; j > 0; j--) {
-                    if(whiteBG){
-                        output.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
-                        whiteBG = false;
-                    }else{
-                        output.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
-                        whiteBG = true;
-                    }
-
-                    assert curGame != null;
-                    if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
-                        ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
-                        color = curGame.getBoard().getPiece(new ChessPosition(i,j)).getTeamColor();
-                        output.append(CalcPiece(type, color));
-                        output.append(EscapeSequences.RESET_BG_COLOR);
-                    }else{
-                        output.append(EscapeSequences.EMPTY).append(EscapeSequences.RESET_BG_COLOR);
-                    }
-                }
-                output.append("\n");
-                whiteBG = !whiteBG;
-            }
-            output.append("   h   g  f   e   d  c   b   a\n");
         }else{
             for (int i = 8; i > 0; i--) {
                 output.append(i).append(" ");
@@ -274,6 +246,7 @@ public class Client {
                 output.append("\n");
                 whiteBG = !whiteBG;
             }
+            output.append("   h   g  f   e   d  c   b   a\n");
         }
         return output.toString();
     }
