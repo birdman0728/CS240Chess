@@ -3,7 +3,7 @@ package client;
 //import client.websocket.NotificationHandler;
 //import webSocketMessages.Notification;
 
-import serverFacade.ServerFacade;
+import serverfacade.ServerFacade;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;

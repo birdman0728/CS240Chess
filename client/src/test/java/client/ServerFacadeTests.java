@@ -5,7 +5,7 @@ import model.ResponseException;
 import org.junit.jupiter.api.*;
 import requestsandresults.*;
 import server.Server;
-import serverFacade.ServerFacade;
+import serverfacade.ServerFacade;
 
 
 public class ServerFacadeTests {
