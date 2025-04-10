@@ -32,7 +32,7 @@ public class Client {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
-            printPrompt();
+//            printPrompt();
             String line = scanner.nextLine();
 
             try {
@@ -138,14 +138,14 @@ public class Client {
             gamesList.clear();
             gamesList.addAll(server.listGames(new ListRequest(AuthToken.authToken())).games());
             if(gamesList != null) {
-                String printList = "";
+                StringBuilder printList = new StringBuilder();
                 int i = 1;
                 for(GameData game : gamesList){
-                    printList += i + " " + game.gameName() + " " + "White: " + game.whiteUsername() + " Black: " + game.blackUsername() + "\n";
+                    printList.append(i).append(" ").append(game.gameName()).append(" ").append("White: ").append(game.whiteUsername()).append(" Black: ").append(game.blackUsername()).append("\n");
                     i++;
                 }
 
-                return printList;
+                return printList.toString();
             }else{
                 return "No games exist\n";
             }
@@ -361,8 +361,8 @@ public class Client {
 //        printPrompt();
 //    }
 
-    private void printPrompt() {
-//        System.out.print("\n" + RESET + ">>> " + GREEN);
-    }
+//    private void printPrompt() {
+////        System.out.print("\n" + RESET + ">>> " + GREEN);
+//    }
 
 }

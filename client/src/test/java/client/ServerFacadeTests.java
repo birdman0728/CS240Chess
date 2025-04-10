@@ -2,6 +2,7 @@ package client;
 
 import chess.ChessGame;
 import dataaccess.DataAccessException;
+import model.ResponseException;
 import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.*;
 import requestsandresults.*;
@@ -29,14 +30,14 @@ public class ServerFacadeTests {
         sF = new ServerFacade("http://localhost:" + port);
     }
     @BeforeEach
-    public void prep(){
+    public void prep() throws ResponseException {
         sF.register(new RegisterRequest(testUser,password,email));
         authToken = sF.login(new LoginRequest(testUser, password)).authToken();
         gameID = sF.create(new CreateRequest(authToken, gameName)).gameID();
     }
 
     @AfterEach
-    public void cleanup(){
+    public void cleanup() throws ResponseException {
         sF.clear();
     }
 
@@ -46,68 +47,80 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void normalReg(){
+    public void normalReg() throws ResponseException {
         Assertions.assertNotNull(sF.register(new RegisterRequest("newguy",password,email)), "Not properly returning a Register Result");
     }
 
     @Test
-    public void missingInfoReg(){
-        Assertions.assertNull(sF.register(new RegisterRequest(testUser,null,email)),"Does not throw error");
+    public void missingInfoReg() throws ResponseException {
+        Assertions.assertThrows(ResponseException.class, () -> {
+                sF.register(new RegisterRequest(testUser,null,email));
+                },"Does not throw error");
     }
 
     @Test
-    public void normalLogin(){
+    public void normalLogin() throws ResponseException {
         Assertions.assertNotNull(sF.login(new LoginRequest(testUser, password)).authToken(),"Error in logging in correctly");
     }
 
     @Test
-    public void badLogin(){
-        Assertions.assertNull(sF.login(new LoginRequest("not correct", "also not correct")),"Not catching bad login");
+    public void badLogin() throws ResponseException {
+        Assertions.assertThrows(ResponseException.class, () -> {
+            sF.login(new LoginRequest("not correct", "also not correct"));
+        },"Not catching bad login");
     }
 
     @Test
-    public void badAuthLogout(){
-        Assertions.assertNull(sF.logout(new LogoutRequest("alkn3j9fnsljfs")),"Not catching a bad logout");
+    public void badAuthLogout() throws ResponseException {
+            Assertions.assertThrows(ResponseException.class, () -> {
+                sF.logout(new LogoutRequest("alkn3j9fnsljfs"));
+            },"Not catching a bad logout");
     }
 
     @Test
-    public void goodList(){
+    public void goodList() throws ResponseException {
         Assertions.assertNotNull(sF.listGames(new ListRequest(authToken)), "Not listing correctly");
     }
 
     @Test
-    public void badList(){
-        Assertions.assertNull(sF.listGames(new ListRequest("a;kjfdsals;jf")), "Not rejecting bad auth");
+    public void badList() throws ResponseException {
+            Assertions.assertThrows(ResponseException.class, () -> {
+                sF.listGames(new ListRequest("a;kjfdsals;jf"));
+            }, "Not rejecting bad auth");
     }
 
     @Test
-    public void goodCreate(){
+    public void goodCreate() throws ResponseException {
         Assertions.assertNotNull(sF.create(new CreateRequest(authToken, gameName)));
     }
 
     @Test
-    public void badCreate(){
-        Assertions.assertNull(sF.create(new CreateRequest("fas;dkj", gameName)));
+    public void badCreate() throws ResponseException {
+            Assertions.assertThrows(ResponseException.class, () -> {
+                sF.create(new CreateRequest("fas;dkj", gameName));
+            },"Not catching a bad authToken");
     }
 
     @Test
-    public void goodJoin(){
+    public void goodJoin() throws ResponseException {
         Assertions.assertNotNull(sF.join(new JoinRequest(authToken, ChessGame.TeamColor.WHITE, gameID, testUser)));
     }
 
     @Test
-    public void badJoin(){
+    public void badJoin() throws ResponseException {
         sF.join(new JoinRequest(authToken, ChessGame.TeamColor.WHITE, gameID, "other User"));
-        Assertions.assertNull(sF.join(new JoinRequest(authToken, ChessGame.TeamColor.WHITE, gameID, testUser)));
+            Assertions.assertThrows(ResponseException.class, () -> {
+                sF.join(new JoinRequest(authToken, ChessGame.TeamColor.WHITE, gameID, testUser));
+            },"Not using the correct username");
     }
 
     @Test
-    public void normalLogout(){
+    public void normalLogout() throws ResponseException {
         Assertions.assertEquals(new LogoutResult(), sF.logout(new LogoutRequest(authToken)),"Not logging out correctly");
     }
 
     @Test
-    public void clear(){
+    public void clear() throws ResponseException {
         Assertions.assertNotNull(sF.clear());
     }
 }

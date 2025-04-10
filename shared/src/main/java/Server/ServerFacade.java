@@ -2,10 +2,12 @@ package Server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.Request;
+import model.ResponseException;
 import requestsandresults.*;
 //import model.Pet;
 
 import java.io.*;
+import java.lang.module.ResolutionException;
 import java.net.*;
 
 public class ServerFacade {
@@ -16,42 +18,42 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public RegisterResult register(RegisterRequest request){
+    public RegisterResult register(RegisterRequest request) throws ResponseException {
         var path = "/user";
         return this.makeRequest("POST", path,null, request, RegisterResult.class);
     }
 
-    public LoginResult login(LoginRequest request){
+    public LoginResult login(LoginRequest request) throws ResponseException {
         var path = "/session";
         return this.makeRequest("POST", path,null, request, LoginResult.class);
     }
 
-    public LogoutResult logout(LogoutRequest request){
+    public LogoutResult logout(LogoutRequest request) throws ResponseException {
         var path = "/session";
         return this.makeRequest("DELETE", path, request.authToken(), null, LogoutResult.class);
     }
 
-    public ListResult listGames(ListRequest request){
+    public ListResult listGames(ListRequest request) throws ResponseException {
         var path = "/game";
         return this.makeRequest("GET", path, request.authToken(), null, ListResult.class);
     }
 
-    public CreateResult create(CreateRequest request){
+    public CreateResult create(CreateRequest request) throws ResponseException {
         var path = "/game";
         return this.makeRequest("POST", path, request.authToken(), request, CreateResult.class);
     }
 
-    public JoinResult join(JoinRequest request){
-        var path = "/game";//TODO check on auth token for this
+    public JoinResult join(JoinRequest request) throws ResponseException {
+        var path = "/game";
         return this.makeRequest("PUT", path, request.authToken(), request, JoinResult.class);
     }
 
-    public ClearResult clear(){
+    public ClearResult clear() throws ResponseException {
         var path = "/db";
         return this.makeRequest("DELETE", path, null, null, ClearResult.class);
     }
 
-    private <T> T makeRequest(String method, String path, String authToken, Object request, Class<T> responseClass){
+    private <T> T makeRequest(String method, String path, String authToken, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -67,8 +69,7 @@ public class ServerFacade {
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (Exception ex) {
-//            throw new DataAccessException(500, ex.getMessage());
-            return null;
+            throw new ResponseException(ex.getMessage(), 500);
         }
     }
 
@@ -83,10 +84,10 @@ public class ServerFacade {
         }
     }
 
-    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException{
+    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, ResponseException {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
-//            throw new DataAccessException(status, "failure: " + status);
+            throw new ResponseException("failure: " + status, status);
         }
     }
 

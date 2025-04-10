@@ -48,7 +48,7 @@ public class Server {
         var user = new Gson().fromJson(req.body(), RegisterRequest.class);
         if(user.username() == null || user.email() == null || user.password() == null){
             res.status(400);
-            return new Gson().toJson(new ErrorResult("Error: bad request"));
+            return new Gson().toJson(new ErrorResult("Error: bad request", 400));
         }
 
         RegisterRequest request = new RegisterRequest(user.username(),user.password(),user.email());
@@ -57,7 +57,7 @@ public class Server {
         }catch(DataAccessException e ){
             res.status(403);
             res.body("Error: already taken");
-            return new Gson().toJson(new ErrorResult("Error: already taken"));
+            return new Gson().toJson(new ErrorResult("Error: already taken", 403));
         }
     }
 
@@ -107,7 +107,7 @@ public class Server {
         var user = new Gson().fromJson(req.body(), CreateRequest.class);
         if(user.gameName() == null){
             res.status(400);
-            return new Gson().toJson(new ErrorResult("Error: bad request"));
+            return new Gson().toJson(new ErrorResult("Error: bad request", 400));
         }
 
 
@@ -128,7 +128,7 @@ public class Server {
 
         if(user.playerColor() == null || user.gameID() == 0){
             res.status(400);
-            return new Gson().toJson(new ErrorResult("Error: bad request"));
+            return new Gson().toJson(new ErrorResult("Error: bad request", 400));
         }
 
         try{
@@ -139,7 +139,7 @@ public class Server {
                 return new Gson().toJson(gameService.joinGame(request));
             }else{
                 res.status(403);
-                return new Gson().toJson(new ErrorResult("Error: already taken"));
+                return new Gson().toJson(new ErrorResult("Error: already taken", 403));
             }
 
         }catch(DataAccessException e){
@@ -153,7 +153,7 @@ public class Server {
     }
 
     private ErrorResult unauthorizedError(){
-        return new ErrorResult("Error: unauthorized");
+        return new ErrorResult("Error: unauthorized", 401);
     }
 
     public void stop() {
