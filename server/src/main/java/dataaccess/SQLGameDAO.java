@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class SQLGameDAO implements GameDAO{
     @Override
-    public int createGame(String gameName) throws DataAccessException { //TODO when saving in SQL, JSON IT TO A STRING
+    public int createGame(String gameName) throws DataAccessException {
         ChessGame newGame = new ChessGame();
         String serializedGame = serializeGame(newGame);
         var statement = "INSERT INTO gamedata (whiteUsername, blackUsername, gameName, game) values (?, ?, ?, ?)";

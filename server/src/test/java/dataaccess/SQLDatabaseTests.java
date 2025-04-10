@@ -187,7 +187,7 @@ public class SQLDatabaseTests {
     }
 
     @Test
-    public void clear() throws DataAccessException {//TODO create actual tests
+    public void clear() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
         gameDAO.clear();

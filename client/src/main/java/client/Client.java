@@ -3,11 +3,10 @@ package client;
 //import client.websocket.NotificationHandler;
 //import webSocketMessages.Notification;
 
-import Server.ServerFacade;
+import server.ServerFacade;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
-import com.sun.source.tree.WhileLoopTree;
 import model.AuthData;
 import model.GameData;
 import model.ResponseException;
@@ -19,7 +18,7 @@ import java.util.*;
 public class Client {
     private final ServerFacade server;
     boolean signedIn;
-    AuthData AuthToken;
+    AuthData authToken;
     List<GameData> gamesList = new ArrayList<>();
 
     public Client(String serverUrl) {
@@ -71,6 +70,7 @@ public class Client {
         try {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            calcLetter("a");
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             if(!signedIn) {
                 return switch (cmd) {
@@ -102,13 +102,13 @@ public class Client {
         StringBuilder output = new StringBuilder();
         if(signedIn){
             gamesList.clear();
-            gamesList.addAll(server.listGames(new ListRequest(AuthToken.authToken())).games());
+            gamesList.addAll(server.listGames(new ListRequest(authToken.authToken())).games());
             if(gamesList != null) {
                 int gameID = Integer.parseInt(params[0]) - 1;
                 ChessGame curGame = null;
                 gameID = gamesList.get(gameID).gameID();
 
-                for(GameData game : server.listGames(new ListRequest(AuthToken.authToken())).games()){
+                for(GameData game : server.listGames(new ListRequest(authToken.authToken())).games()){
                     if(game.gameID() == gameID){
                         curGame = game.game();
                         output.append("Observing Game: ").append(game.gameName()).append("\n\n");
@@ -128,7 +128,7 @@ public class Client {
 
     private String create(String[] params) throws Exception{
         if(signedIn && params.length == 1){
-            CreateResult res = server.create(new CreateRequest(AuthToken.authToken(), params[0]));
+            CreateResult res = server.create(new CreateRequest(authToken.authToken(), params[0]));
             return "Game " + params[0] + " created.";
         }else{
             throw new ResponseException("Not signed in or no name added", 401);
@@ -138,12 +138,13 @@ public class Client {
     private String list() throws Exception{
         if(signedIn){
             gamesList.clear();
-            gamesList.addAll(server.listGames(new ListRequest(AuthToken.authToken())).games());
+            gamesList.addAll(server.listGames(new ListRequest(authToken.authToken())).games());
             if(gamesList != null) {
                 StringBuilder printList = new StringBuilder();
                 int i = 1;
                 for(GameData game : gamesList){
-                    printList.append(i).append(" | ").append(game.gameName()).append(" ").append("White: ").append(game.whiteUsername()).append(" | Black: ").append(game.blackUsername()).append("\n");
+                    printList.append(i).append(" | ").append(game.gameName()).append(" ").append("White: ")
+                            .append(game.whiteUsername()).append(" | Black: ").append(game.blackUsername()).append("\n");
                     i++;
                 }
 
@@ -158,7 +159,7 @@ public class Client {
 
     private String play(String[] params) throws Exception{
         gamesList.clear();
-        gamesList.addAll(server.listGames(new ListRequest(AuthToken.authToken())).games());
+        gamesList.addAll(server.listGames(new ListRequest(authToken.authToken())).games());
 
         if(signedIn){
             ChessGame.TeamColor color;
@@ -177,8 +178,8 @@ public class Client {
             gameID = gamesList.get(gameID).gameID();
 
 
-            server.join(new JoinRequest(AuthToken.authToken(), color, gameID, AuthToken.username()));
-            for(GameData game : server.listGames(new ListRequest(AuthToken.authToken())).games()){
+            server.join(new JoinRequest(authToken.authToken(), color, gameID, authToken.username()));
+            for(GameData game : server.listGames(new ListRequest(authToken.authToken())).games()){
                 if(game.gameID() == gameID){
                     curGame = game.game();
                     output.append("Joining Game: ").append(game.gameName()).append("\n\n");
@@ -303,31 +304,23 @@ public class Client {
         }
     }
 
-    private int calcLetter(String letter){
-        switch(letter) {
-            case "a":
-                return 1;
-            case "b":
-                return 2;
-            case "c":
-                return 3;
-            case "d":
-                return 4;
-            case "e":
-                return 5;
-            case "f":
-                return 6;
-            case "g":
-                return 7;
-            case "h":
-                return 8;
-            default: return 0;
-        }
+    private int calcLetter(String letter) throws ResponseException {
+        return switch (letter) {
+            case "a" -> 1;
+            case "b" -> 2;
+            case "c" -> 3;
+            case "d" -> 4;
+            case "e" -> 5;
+            case "f" -> 6;
+            case "g" -> 7;
+            case "h" -> 8;
+            default -> throw new ResponseException("Please put in a proper input", 401);
+        };
     }
 
     private String logout() throws Exception{
         if(signedIn){
-            server.logout(new LogoutRequest(AuthToken.authToken()));
+            server.logout(new LogoutRequest(authToken.authToken()));
             signedIn = false;
             return "Logged out.";
         }else{
@@ -339,7 +332,7 @@ public class Client {
     private String register(String[] params) throws Exception {
         if(params.length == 3 && !signedIn){
             RegisterResult req = server.register(new RegisterRequest(params[0], params[1], params[2]));
-            AuthToken = new AuthData(req.authToken(), req.username());
+            authToken = new AuthData(req.authToken(), req.username());
             signedIn = true;
             return "Successfully registered.";
         }else{
@@ -350,21 +343,11 @@ public class Client {
     private String login(String[] params) throws Exception {
         if(params.length == 2 && !signedIn){
             LoginResult req = server.login(new LoginRequest(params[0], params[1]));
-            AuthToken = new AuthData(req.authToken(), req.username());
+            authToken = new AuthData(req.authToken(), req.username());
             signedIn = true;
             return "Successfully signed in.";
         }else{
             throw new ResponseException("Please put email and password.", 400);
         }
     }
-
-//    public void notify(Notification notification) {
-//        System.out.println(RED + notification.message());
-//        printPrompt();
-//    }
-
-//    private void printPrompt() {
-////        System.out.print("\n" + RESET + ">>> " + GREEN);
-//    }
-
 }

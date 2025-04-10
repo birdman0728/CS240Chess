@@ -68,7 +68,7 @@ public class SQLUserDAO implements UserDAO {
     }
 
 
-    private final String[] createStatements = { //TODO set auth and game foreign keys correctly
+    private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  userdata (
                 `username` varchar(256) NOT NULL,
@@ -112,7 +112,7 @@ public class SQLUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Unable to configure database: %s");//TODO make sure this throws a 500 level error
+            throw new DataAccessException("Unable to configure database: %s");
         }
     }
 }

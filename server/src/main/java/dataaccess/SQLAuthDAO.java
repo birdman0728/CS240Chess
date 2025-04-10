@@ -30,7 +30,7 @@ public class SQLAuthDAO implements AuthDAO{
     }
 
     @Override
-    public boolean verifyAuth(String authToken) throws DataAccessException {//TODO turn verify's into gets(?)
+    public boolean verifyAuth(String authToken) throws DataAccessException {
         if(Objects.equals(getDataFromAuth(authToken).authToken(), authToken)){
             return true;
         }

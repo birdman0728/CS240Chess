@@ -1,13 +1,11 @@
-package Server;
+package server;
 
 import com.google.gson.Gson;
-import com.sun.net.httpserver.Request;
 import model.ResponseException;
 import requestsandresults.*;
 //import model.Pet;
 
 import java.io.*;
-import java.lang.module.ResolutionException;
 import java.net.*;
 
 public class ServerFacade {

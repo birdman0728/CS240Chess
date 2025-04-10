@@ -1,13 +1,11 @@
 package client;
 
 import chess.ChessGame;
-import dataaccess.DataAccessException;
 import model.ResponseException;
-import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.*;
 import requestsandresults.*;
 import server.Server;
-import Server.ServerFacade;
+import server.ServerFacade;
 
 
 public class ServerFacadeTests {
@@ -15,12 +13,12 @@ public class ServerFacadeTests {
     private static Server server;
     private static ServerFacade sF;
 
-    private static final String testUser = "Test";
-    private static final String password = "password";
-    private static final String email = "email@email.com";
+    private static final String TEST_USER = "Test";
+    private static final String PASSWORD = "password";
+    private static final String EMAIL = "email@email.com";
     private static String authToken;
     private static int gameID;
-    private static final String gameName = "name";
+    private static final String GAME_NAME = "name";
 
     @BeforeAll
     public static void init() {
@@ -31,9 +29,9 @@ public class ServerFacadeTests {
     }
     @BeforeEach
     public void prep() throws ResponseException {
-        sF.register(new RegisterRequest(testUser,password,email));
-        authToken = sF.login(new LoginRequest(testUser, password)).authToken();
-        gameID = sF.create(new CreateRequest(authToken, gameName)).gameID();
+        sF.register(new RegisterRequest(TEST_USER, PASSWORD, EMAIL));
+        authToken = sF.login(new LoginRequest(TEST_USER, PASSWORD)).authToken();
+        gameID = sF.create(new CreateRequest(authToken, GAME_NAME)).gameID();
     }
 
     @AfterEach
@@ -48,19 +46,19 @@ public class ServerFacadeTests {
 
     @Test
     public void normalReg() throws ResponseException {
-        Assertions.assertNotNull(sF.register(new RegisterRequest("newguy",password,email)), "Not properly returning a Register Result");
+        Assertions.assertNotNull(sF.register(new RegisterRequest("newguy", PASSWORD, EMAIL)), "Not properly returning a Register Result");
     }
 
     @Test
     public void missingInfoReg() throws ResponseException {
         Assertions.assertThrows(ResponseException.class, () -> {
-                sF.register(new RegisterRequest(testUser,null,email));
+                sF.register(new RegisterRequest(TEST_USER,null, EMAIL));
                 },"Does not throw error");
     }
 
     @Test
     public void normalLogin() throws ResponseException {
-        Assertions.assertNotNull(sF.login(new LoginRequest(testUser, password)).authToken(),"Error in logging in correctly");
+        Assertions.assertNotNull(sF.login(new LoginRequest(TEST_USER, PASSWORD)).authToken(),"Error in logging in correctly");
     }
 
     @Test
@@ -91,26 +89,26 @@ public class ServerFacadeTests {
 
     @Test
     public void goodCreate() throws ResponseException {
-        Assertions.assertNotNull(sF.create(new CreateRequest(authToken, gameName)));
+        Assertions.assertNotNull(sF.create(new CreateRequest(authToken, GAME_NAME)));
     }
 
     @Test
     public void badCreate() throws ResponseException {
             Assertions.assertThrows(ResponseException.class, () -> {
-                sF.create(new CreateRequest("fas;dkj", gameName));
+                sF.create(new CreateRequest("fas;dkj", GAME_NAME));
             },"Not catching a bad authToken");
     }
 
     @Test
     public void goodJoin() throws ResponseException {
-        Assertions.assertNotNull(sF.join(new JoinRequest(authToken, ChessGame.TeamColor.WHITE, gameID, testUser)));
+        Assertions.assertNotNull(sF.join(new JoinRequest(authToken, ChessGame.TeamColor.WHITE, gameID, TEST_USER)));
     }
 
     @Test
     public void badJoin() throws ResponseException {
         sF.join(new JoinRequest(authToken, ChessGame.TeamColor.WHITE, gameID, "other User"));
             Assertions.assertThrows(ResponseException.class, () -> {
-                sF.join(new JoinRequest(authToken, ChessGame.TeamColor.WHITE, gameID, testUser));
+                sF.join(new JoinRequest(authToken, ChessGame.TeamColor.WHITE, gameID, TEST_USER));
             },"Not using the correct username");
     }
 
