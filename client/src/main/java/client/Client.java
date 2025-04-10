@@ -214,7 +214,7 @@ public class Client {
                     if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
                         ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
                         color = curGame.getBoard().getPiece(new ChessPosition(i,j)).getTeamColor();
-                        output.append(CalcPiece(type, color));
+                        output.append(calcPiece(type, color));
                         output.append(EscapeSequences.RESET_TEXT_COLOR).append(EscapeSequences.RESET_BG_COLOR);
                     }else{
                         output.append(EscapeSequences.EMPTY).append(EscapeSequences.RESET_BG_COLOR);
@@ -240,7 +240,7 @@ public class Client {
                     if(curGame.getBoard().getPiece(new ChessPosition(i, j)) != null) {
                         ChessPiece.PieceType type = curGame.getBoard().getPiece(new ChessPosition(i, j)).getPieceType();
                         color = curGame.getBoard().getPiece(new ChessPosition(i,j)).getTeamColor();
-                        output.append(CalcPiece(type, color));
+                        output.append(calcPiece(type, color));
                         output.append(EscapeSequences.RESET_BG_COLOR);
                     }else{
                         output.append(EscapeSequences.EMPTY).append(EscapeSequences.RESET_BG_COLOR);
@@ -254,7 +254,7 @@ public class Client {
         return output.toString();
     }
 
-    private String CalcPiece(ChessPiece.PieceType type, ChessGame.TeamColor color) {
+    private String calcPiece(ChessPiece.PieceType type, ChessGame.TeamColor color) {
         switch (type) {
             case KING:
                 if (color == ChessGame.TeamColor.BLACK) {
