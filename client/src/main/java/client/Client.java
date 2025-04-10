@@ -10,6 +10,7 @@ import chess.ChessPosition;
 import com.sun.source.tree.WhileLoopTree;
 import model.AuthData;
 import model.GameData;
+import model.ResponseException;
 import requestsandresults.*;
 import ui.EscapeSequences;
 
@@ -37,7 +38,7 @@ public class Client {
 
             try {
                 result = eval(line);
-                System.out.print(result);
+                System.out.println(result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -73,8 +74,9 @@ public class Client {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             if(!signedIn) {
                 return switch (cmd) {
-                    case "register" -> register(params); //TODO implement an actual exception in server
+                    case "register" -> register(params);
                     case "login" -> login(params);
+                    case "quit" -> "quit";
                     default -> help();
                 };
             }else {
@@ -88,13 +90,13 @@ public class Client {
                     default -> help();
                 };
             }
-        } catch (Exception ex) {
+        } catch (ResponseException ex) {
             return ex.getMessage();
+        }catch (Exception ex){
+            return "An Error Occurred: Please try again and double check your input";
+
         }
     }
-
-//              TODO Make errors not show up
-//              TODO make Server Facade throw errors and tests adjust
 
     private String observe(String[] params) throws Exception{
         StringBuilder output = new StringBuilder();
@@ -117,19 +119,19 @@ public class Client {
 
                 return output.toString();
             }else{
-                return "No games to observe\n";
+                return "No games to observe";
             }
         }else{
-            throw new Exception("You are not signed in");
+            throw new ResponseException("You are not signed in", 401);
         }
     }
 
     private String create(String[] params) throws Exception{
         if(signedIn && params.length == 1){
             CreateResult res = server.create(new CreateRequest(AuthToken.authToken(), params[0]));
-            return "Game " + params[0] + " created with id: " + res.gameID() + "\n";
+            return "Game " + params[0] + " created.";
         }else{
-            throw new Exception("Not signed in or no name added\n");
+            throw new ResponseException("Not signed in or no name added", 401);
         }
     }
 
@@ -141,16 +143,16 @@ public class Client {
                 StringBuilder printList = new StringBuilder();
                 int i = 1;
                 for(GameData game : gamesList){
-                    printList.append(i).append(" ").append(game.gameName()).append(" ").append("White: ").append(game.whiteUsername()).append(" Black: ").append(game.blackUsername()).append("\n");
+                    printList.append(i).append(" | ").append(game.gameName()).append(" ").append("White: ").append(game.whiteUsername()).append(" | Black: ").append(game.blackUsername()).append("\n");
                     i++;
                 }
 
                 return printList.toString();
             }else{
-                return "No games exist\n";
+                return "No games exis";
             }
         }else{
-            throw new Exception("Not logged in\n");
+            throw new ResponseException("Not logged in", 401);
         }
     }
 
@@ -165,7 +167,7 @@ public class Client {
             }else if(Objects.equals(params[1], "black")){
                 color = ChessGame.TeamColor.BLACK;
             }else{
-                throw new Exception("Please specify which team you'd like to join\n");
+                throw new ResponseException("Please specify which team you'd like to join", 400);
             }
 
             int gameID = Integer.parseInt(params[0]) - 1;
@@ -188,7 +190,7 @@ public class Client {
             return output.toString();
 
         }else{
-            throw new Exception("Please specify which game you'd like to join\n");
+            throw new ResponseException("Please specify which game you'd like to join", 400);
         }
     }
 
@@ -220,7 +222,7 @@ public class Client {
                 output.append("\n");
                 whiteBG = !whiteBG;
             }
-            output.append("   a   b  c   d  e   f   g   h\n");
+            output.append("   a   b  c   d  e   f   g   h");
         }else{
             for (int i = 8; i > 0; i--) {
                 output.append(i).append(" ");
@@ -246,7 +248,7 @@ public class Client {
                 output.append("\n");
                 whiteBG = !whiteBG;
             }
-            output.append("   h   g  f   e   d  c   b   a\n");
+            output.append("   h   g  f   e   d  c   b   a");
         }
         return output.toString();
     }
@@ -327,9 +329,9 @@ public class Client {
         if(signedIn){
             server.logout(new LogoutRequest(AuthToken.authToken()));
             signedIn = false;
-            return "Logged out. \n";
+            return "Logged out.";
         }else{
-            throw new Exception("Not signed in\n");
+            throw new ResponseException("Not signed in", 401);
         }
     }
 
@@ -339,9 +341,9 @@ public class Client {
             RegisterResult req = server.register(new RegisterRequest(params[0], params[1], params[2]));
             AuthToken = new AuthData(req.authToken(), req.username());
             signedIn = true;
-            return "Successfully registered. \n";
+            return "Successfully registered.";
         }else{
-            throw new Exception("Please input a username password than email\n");
+            throw new ResponseException("Please input a username password than email", 400);
         }
     }
 
@@ -350,9 +352,9 @@ public class Client {
             LoginResult req = server.login(new LoginRequest(params[0], params[1]));
             AuthToken = new AuthData(req.authToken(), req.username());
             signedIn = true;
-            return "Successfully signed in. \n";
+            return "Successfully signed in.";
         }else{
-            throw new Exception("Please put email and password\n");
+            throw new ResponseException("Please put email and password.", 400);
         }
     }
 
