@@ -199,7 +199,7 @@ public class Client {
         StringBuilder output = new StringBuilder();
         boolean whiteBG = false;
         if(color == ChessGame.TeamColor.WHITE){
-            for (int i = 1; i < 9; i++) {
+            for (int i = 8; i > 0; i--) {
                 output.append(i).append(" ");
                 for (int j = 1; j < 9; j++) {
                     if(whiteBG){
@@ -225,7 +225,7 @@ public class Client {
             }
             output.append("   a   b  c   d  e   f   g   h");
         }else{
-            for (int i = 8; i > 0; i--) {
+            for (int i = 1; i < 9; i++) {
                 output.append(i).append(" ");
                 for (int j = 8; j > 0; j--) {
                     if(whiteBG){
