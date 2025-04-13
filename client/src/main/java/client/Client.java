@@ -80,7 +80,7 @@ public class Client {
                     default -> help();
                 };
             }else {
-                if(){
+                if (!IGC.inGame()) {
                     return switch (cmd) {
                         case "create" -> create(params);
                         case "list" -> list();
@@ -89,6 +89,15 @@ public class Client {
                         case "logout" -> logout();
                         case "quit" -> "quit";
                         default -> help();
+                    };
+                } else {
+                    return switch (cmd) {
+                        case "redraw" -> IGC.drawBoard();
+                        case "leave" -> IGC.leave();
+                        case "move" -> IGC.makeMove(params);
+                        case "resign" -> IGC.resign();
+                        case "hightlight" -> IGC.hightlight(params);
+                        default -> IGC.help();
                     };
                 }
             }
@@ -117,7 +126,8 @@ public class Client {
                     }
                 }
 
-                output.append(drawBoard(ChessGame.TeamColor.WHITE, curGame));
+                IGC = new InGameCommands(ChessGame.TeamColor.WHITE, curGame, true);
+                output.append(IGC.drawBoard());
 
                 return output.toString();
             }else{
@@ -187,7 +197,7 @@ public class Client {
                     output.append("Joining Game: ").append(game.gameName()).append("\n\n");
                 }
             }
-            IGC = new InGameCommands(color, curGame);
+            IGC = new InGameCommands(color, curGame, false);
             output.append(IGC.drawBoard());
 
             return output.toString();

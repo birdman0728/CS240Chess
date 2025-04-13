@@ -10,11 +10,13 @@ public class InGameCommands {
     //TODO: make notification for each one of these classes
     ChessGame.TeamColor color;
     ChessGame game;
-    boolean inGame = true;
-    public InGameCommands(ChessGame.TeamColor color, ChessGame game){
+    private boolean inGame = true;
+    private boolean observer;
+    public InGameCommands(ChessGame.TeamColor color, ChessGame game, boolean observer){
         //server probably as well as game
         this.color = color;
         this.game = game;
+        this.observer = observer;
     }
 
     public boolean inGame(){
@@ -142,7 +144,7 @@ public class InGameCommands {
         inGame = false;
         return null;
     }
-    public String makeMove(String startMove, String endMove){
+    public String makeMove(String[] params){
         return null;
     }
     private int calcLetter(String letter) throws ResponseException {
@@ -163,7 +165,7 @@ public class InGameCommands {
         inGame = false;
         return null;
     }
-    public String hightlight(String position){
+    public String hightlight(String[] params){
         return null;
     }
 
