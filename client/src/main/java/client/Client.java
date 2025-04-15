@@ -80,7 +80,7 @@ public class Client {
                     default -> help();
                 };
             }else {
-                if (!IGC.inGame()) {
+                if (IGC == null || !IGC.inGame()) {
                     return switch (cmd) {
                         case "create" -> create(params);
                         case "list" -> list();
@@ -96,7 +96,7 @@ public class Client {
                         case "leave" -> IGC.leave();
                         case "move" -> IGC.makeMove(params);
                         case "resign" -> IGC.resign();
-                        case "hightlight" -> IGC.hightlight(params);
+                        case "highlight" -> IGC.hightlight(params);
                         default -> IGC.help();
                     };
                 }

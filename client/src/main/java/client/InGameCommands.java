@@ -11,7 +11,7 @@ public class InGameCommands {
     ChessGame.TeamColor color;
     ChessGame game;
     private boolean inGame = true;
-    private boolean observer;
+    private final boolean observer;
     public InGameCommands(ChessGame.TeamColor color, ChessGame game, boolean observer){
         //server probably as well as game
         this.color = color;
@@ -21,6 +21,11 @@ public class InGameCommands {
 
     public boolean inGame(){
         return inGame;
+    }
+    private void assertNotObserver() throws ResponseException {
+        if(observer){
+           throw new ResponseException("Error: Cannot do that command as an observer", 401);
+        }
     }
 
     public String help(){
@@ -144,7 +149,9 @@ public class InGameCommands {
         inGame = false;
         return null;
     }
-    public String makeMove(String[] params){
+    public String makeMove(String[] params) throws ResponseException {
+        assertNotObserver();
+        //TODO use calcLetter
         return null;
     }
     private int calcLetter(String letter) throws ResponseException {
@@ -161,7 +168,8 @@ public class InGameCommands {
         };
     }
 
-    public String resign(){
+    public String resign() throws ResponseException {
+        assertNotObserver();
         inGame = false;
         return null;
     }
